@@ -3,17 +3,14 @@ package pro.vulpine.vCrates.manager;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import pro.vulpine.vCrates.VCrates;
+import pro.vulpine.vCrates.configuration.CratesConfiguration;
 import pro.vulpine.vCrates.instance.Crate;
 import pro.vulpine.vCrates.instance.Reward;
 import pro.vulpine.vCrates.instance.RewardItem;
 import pro.vulpine.vCrates.utils.Logger;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CrateManager {
 
@@ -24,25 +21,25 @@ public class CrateManager {
     public CrateManager(VCrates plugin) {
         this.plugin = plugin;
 
-        loadCrates(plugin.getConfig());
+        loadCrates(plugin.getCratesConfiguration());
     }
 
-    private void loadCrates(FileConfiguration config) {
+    private void loadCrates(CratesConfiguration config) {
 
-        ConfigurationSection cratesSection = config.getConfigurationSection("crates");
+        Set<String> crateKeys = config.getKeys(false);
 
-        if (cratesSection == null) {
+        if (crateKeys.isEmpty()) {
 
-            Logger.error("No crates found in config.yml, please add them.", "CrateManager");
+            Logger.error("No crates found, please add them.", "CrateManager");
             return;
 
         }
 
-        Logger.info("Found " + cratesSection.getKeys(false).size() + " crate(s) in config.yml", "CrateManager");
+        Logger.info("Found " + crateKeys.size() + " crate(s)", "CrateManager");
 
-        for (String identifier : cratesSection.getKeys(false)) {
+        for (String identifier : crateKeys) {
 
-            ConfigurationSection crateSection = cratesSection.getConfigurationSection(identifier);
+            ConfigurationSection crateSection = config.getConfigurationSection(identifier);
 
             if (crateSection == null) {
                 Logger.warn("Crate " + identifier + " is null, skipping.", "CrateManager");
@@ -50,11 +47,12 @@ public class CrateManager {
             }
 
             String name = crateSection.getString("name");
+            int cooldown = crateSection.getInt("cooldown");
+
             Logger.info("Loading crate " + identifier + " with name " + name, "CrateManager");
 
             List<Location> blocks = new ArrayList<>();
             List<String> blocksStrings = crateSection.getStringList("blocks");
-            Logger.info("Found " + blocksStrings.size() + " blocks for crate " + identifier, "CrateManager");
             for (String loc : blocksStrings) {
                 String[] parts = loc.split(",");
 
@@ -66,7 +64,6 @@ public class CrateManager {
 
                     Location location = new Location(plugin.getServer().getWorld(worldName), x, y, z);
                     blocks.add(location);
-                    Logger.info("Added block " + loc + " to crate " + identifier, "CrateManager");
                 } else {
                     Logger.warn("Block " + loc + " is not a valid location, skipping.", "CrateManager");
                 }
@@ -78,14 +75,11 @@ public class CrateManager {
 
             if (rewardsSection != null) {
 
-                Logger.info("Loading rewards for crate " + identifier, "CrateManager");
-
                 for (String rewardIdentifier : rewardsSection.getKeys(false)) {
 
                     ConfigurationSection rewardSection = rewardsSection.getConfigurationSection(rewardIdentifier);
 
                     if (rewardSection == null) {
-                        Logger.warn("Reward " + rewardIdentifier + " is null, skipping.", "CrateManager");
                         continue;
                     }
 
@@ -94,8 +88,6 @@ public class CrateManager {
 
                     List<RewardItem> rewardItems = new ArrayList<>();
                     List<Map<?, ?>> itemsList = rewardSection.getMapList("items");
-
-                    Logger.info("Found " + itemsList.size() + " items for reward " + rewardIdentifier, "CrateManager");
 
                     for (Map<?, ?> itemData : itemsList) {
 
@@ -106,7 +98,6 @@ public class CrateManager {
 
                         if (itemType != null) {
                             rewardItems.add(new RewardItem(itemName, itemLore, itemType, amount));
-                            Logger.info("Added item " + itemName + " to reward " + rewardIdentifier, "CrateManager");
                         } else {
                             Logger.warn("Item " + itemData.get("type") + " is not a valid material, skipping.", "CrateManager");
                         }
@@ -116,13 +107,12 @@ public class CrateManager {
                     List<String> rewardCommands = rewardSection.getStringList("commands");
 
                     rewards.add(new Reward(rewardIdentifier, rewardName, displayItem, rewardItems, rewardCommands));
-                    Logger.info("Added reward " + rewardIdentifier + " to crate " + identifier, "CrateManager");
 
                 }
 
             }
 
-            Crate crate = new Crate(identifier, name, blocks, rewards);
+            Crate crate = new Crate(this, identifier, name, cooldown, blocks, rewards);
             crates.put(identifier, crate);
 
         }
@@ -148,4 +138,7 @@ public class CrateManager {
         return crates;
     }
 
+    public VCrates getPlugin() {
+        return plugin;
+    }
 }

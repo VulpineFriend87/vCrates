@@ -1,0 +1,5 @@
+# vCrates - Messages configuration
+# By VulpineFriend87
+
+crates:
+  cooldown: "&cYou must wait %time% seconds before opening a crate again." # Placeholders: %time%

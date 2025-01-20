@@ -1,18 +1,23 @@
 package pro.vulpine.vCrates;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import pro.vulpine.vCrates.configuration.CratesConfiguration;
+import pro.vulpine.vCrates.configuration.MainConfiguration;
+import pro.vulpine.vCrates.configuration.MessagesConfiguration;
 import pro.vulpine.vCrates.listener.CrateListener;
 import pro.vulpine.vCrates.manager.CrateManager;
 import pro.vulpine.vCrates.utils.Logger;
 
 public final class VCrates extends JavaPlugin {
 
+    private MainConfiguration mainConfiguration;
+    private MessagesConfiguration messagesConfiguration;
+    private CratesConfiguration cratesConfiguration;
+
     private CrateManager crateManager;
 
     @Override
     public void onEnable() {
-
-        saveDefaultConfig();
 
         String[] ascii = {
                 "",
@@ -32,13 +37,31 @@ public final class VCrates extends JavaPlugin {
             Logger.info(line);
         }
 
+        mainConfiguration = new MainConfiguration(this);
+        messagesConfiguration = new MessagesConfiguration(this);
+        cratesConfiguration = new CratesConfiguration(this);
+
         crateManager = new CrateManager(this);
 
         getServer().getPluginManager().registerEvents(new CrateListener(this), this);
 
     }
 
+    public MainConfiguration getMainConfiguration() {
+        return mainConfiguration;
+    }
+
+
+    public MessagesConfiguration getMessagesConfiguration() {
+        return messagesConfiguration;
+    }
+
+    public CratesConfiguration getCratesConfiguration() {
+        return cratesConfiguration;
+    }
+
     public CrateManager getCrateManager() {
         return crateManager;
     }
+
 }
