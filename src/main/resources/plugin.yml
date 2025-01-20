@@ -1,0 +1,14 @@
+name: vCrates
+version: '1.0-ALPHA'
+main: pro.vulpine.vCrates.VCrates
+api-version: '1.21'
+authors: [ VulpineFriend87 ]
+website: https://vulpine.pro
+
+commands:
+    vcrates:
+        description: "Main command"
+        usage: "/vcrates <arguments>"
+        aliases:
+          - vc
+          - crates
