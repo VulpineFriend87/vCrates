@@ -7,12 +7,15 @@ import pro.vulpine.vCrates.configuration.MessagesConfiguration;
 import pro.vulpine.vCrates.listener.CrateListener;
 import pro.vulpine.vCrates.manager.CrateManager;
 import pro.vulpine.vCrates.utils.Logger;
+import pro.vulpine.vCrates.utils.ActionParser;
 
 public final class VCrates extends JavaPlugin {
 
     private MainConfiguration mainConfiguration;
     private MessagesConfiguration messagesConfiguration;
     private CratesConfiguration cratesConfiguration;
+
+    private ActionParser actionParser;
 
     private CrateManager crateManager;
 
@@ -41,6 +44,8 @@ public final class VCrates extends JavaPlugin {
         messagesConfiguration = new MessagesConfiguration(this);
         cratesConfiguration = new CratesConfiguration(this);
 
+        actionParser = new ActionParser(this);
+
         crateManager = new CrateManager(this);
 
         getServer().getPluginManager().registerEvents(new CrateListener(this), this);
@@ -58,6 +63,10 @@ public final class VCrates extends JavaPlugin {
 
     public CratesConfiguration getCratesConfiguration() {
         return cratesConfiguration;
+    }
+
+    public ActionParser getActionParser() {
+        return actionParser;
     }
 
     public CrateManager getCrateManager() {

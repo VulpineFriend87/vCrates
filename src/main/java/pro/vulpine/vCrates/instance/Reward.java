@@ -6,18 +6,18 @@ import java.util.List;
 
 public class Reward {
 
-    private String identifier;
-    private String name;
-    private Material displayItem;
-    private List<RewardItem> items;
-    private List<String> commands;
+    private final String identifier;
+    private final String name;
+    private final Material displayItem;
+    private final List<RewardItem> items;
+    private final List<String> actions;
 
-    public Reward(String identifier, String name, Material displayItem, List<RewardItem> items, List<String> commands) {
+    public Reward(String identifier, String name, Material displayItem, List<RewardItem> items, List<String> actions) {
         this.identifier = identifier;
         this.name = name;
         this.displayItem = displayItem;
         this.items = items;
-        this.commands = commands;
+        this.actions = actions;
     }
 
     public String getIdentifier() {
@@ -36,8 +36,8 @@ public class Reward {
         return items;
     }
 
-    public List<String> getCommands() {
-        return commands;
+    public List<String> getActions() {
+        return actions;
     }
 
 }

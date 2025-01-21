@@ -4,7 +4,7 @@
 example:
   blocks: []
   name: Example Crate
-  cooldown: 0 # In milliseconds (1s = 1000ms) (0 = disabled)
+  cooldown: 5000 # In milliseconds (1s = 1000ms) (0 = disabled)
   keys:
     required: true
     allowed:
@@ -35,12 +35,26 @@ example:
   rewards:
     example:
       name: "&9&lEXAMPLE REWARD"
-      lore:
-        - "&7This is an example reward"
       display_item: DIAMOND_BLOCK
       items:
         - name: "&9&lEXAMPLE ITEM"
+          lore:
+            - "&7This is an example reward"
           type: DIAMOND_BLOCK
           amount: 1
-      commands:
-        - say example
+
+      # Possible actions: COMMAND, TITLE, ACTIONBAR, MESSAGE, SOUND, DELAY
+      # Formats:
+      #  - "[COMMAND] console/player; command without slash" -> Executes the command on the console/player
+      #  - "[TITLE] global/player; title; subtitle; fadeIn; stay; fadeOut" -> Displays a title on the global/player
+      #  - "[ACTIONBAR] global/player; message" -> Displays an actionbar on the global/player
+      #  - "[MESSAGE] global/player; message" -> Displays a message on the global/player
+      #  - "[SOUND] global/player; sound; volume; pitch" -> Plays a sound on the global/player
+      #  - "[DELAY] milliseconds" -> Delays the execution of the next action
+      actions:
+        - "[COMMAND] console; say hello world"
+        - "[DELAY] 1000"
+        - "[TITLE] player; &9&lEXAMPLE DELAYED TITLE; &7This is an example delayed title; 10; 40; 10"
+        - "[DELAY] 1000"
+        - "[ACTIONBAR] player; &9&lEXAMPLE DELAYED ACTIONBAR"
+        - "[MESSAGE] player; &9&lEXAMPLE MESSAGE"

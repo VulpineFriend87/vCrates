@@ -1,5 +1,6 @@
 package pro.vulpine.vCrates.instance;
 
+import it.vulpinefriend87.easyutils.Colorize;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -8,10 +9,10 @@ import java.util.List;
 
 public class RewardItem {
 
-    private String name;
-    private List<String> lore;
-    private Material type;
-    private int amount;
+    private final String name;
+    private final List<String> lore;
+    private final Material type;
+    private final int amount;
 
     public RewardItem(String name, List<String> lore, Material type, int amount) {
         this.name = name;
@@ -26,8 +27,8 @@ public class RewardItem {
 
         ItemMeta meta = item.getItemMeta();
 
-        meta.setDisplayName(rewardItem.getName());
-        meta.setLore(rewardItem.getLore());
+        meta.setDisplayName(Colorize.color(rewardItem.getName()));
+        meta.setLore(Colorize.color(rewardItem.getLore()));
 
         item.setItemMeta(meta);
 

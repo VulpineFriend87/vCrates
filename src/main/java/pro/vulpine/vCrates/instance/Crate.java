@@ -48,11 +48,11 @@ public class Crate {
             player.getInventory().addItem(RewardItem.toItemStack(item));
         }
 
-        for (String command : reward.getCommands()) {
-            player.performCommand(command);
-        }
+        crateManager.getPlugin().getActionParser().executeActions(reward.getActions(), player, 0);
 
-        setCooldown(player);
+        if (cooldown > 0) {
+            setCooldown(player);
+        }
 
     }
 

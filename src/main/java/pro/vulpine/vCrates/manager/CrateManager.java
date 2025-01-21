@@ -92,7 +92,9 @@ public class CrateManager {
                     for (Map<?, ?> itemData : itemsList) {
 
                         String itemName = (String) itemData.get("name");
+
                         List<String> itemLore = (List<String>) itemData.get("lore");
+
                         Material itemType = Material.getMaterial(itemData.get("type").toString().toUpperCase());
                         int amount = (int) itemData.get("amount");
 
@@ -104,9 +106,9 @@ public class CrateManager {
 
                     }
 
-                    List<String> rewardCommands = rewardSection.getStringList("commands");
+                    List<String> rewardActions = rewardSection.getStringList("actions");
 
-                    rewards.add(new Reward(rewardIdentifier, rewardName, displayItem, rewardItems, rewardCommands));
+                    rewards.add(new Reward(rewardIdentifier, rewardName, displayItem, rewardItems, rewardActions));
 
                 }
 

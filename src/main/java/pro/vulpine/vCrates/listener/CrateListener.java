@@ -8,7 +8,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import pro.vulpine.vCrates.VCrates;
 import pro.vulpine.vCrates.instance.Crate;
-import pro.vulpine.vCrates.utils.Logger;
 
 public class CrateListener implements Listener {
 
@@ -34,7 +33,6 @@ public class CrateListener implements Listener {
                         event.setCancelled(true);
 
                         crate.open(event.getPlayer());
-                        Logger.info("Player " + event.getPlayer().getName() + " opened crate " + crate.getName(), "CrateListener");
                     }
                 }
             }
