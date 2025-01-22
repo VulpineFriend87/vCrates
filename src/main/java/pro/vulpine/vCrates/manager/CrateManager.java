@@ -6,6 +6,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import pro.vulpine.vCrates.VCrates;
 import pro.vulpine.vCrates.configuration.CratesConfiguration;
 import pro.vulpine.vCrates.instance.Crate;
+import pro.vulpine.vCrates.instance.CrateKeys;
 import pro.vulpine.vCrates.instance.Reward;
 import pro.vulpine.vCrates.instance.RewardItem;
 import pro.vulpine.vCrates.utils.Logger;
@@ -25,6 +26,8 @@ public class CrateManager {
     }
 
     private void loadCrates(CratesConfiguration config) {
+
+        crates.clear();
 
         Set<String> crateKeys = config.getKeys(false);
 
@@ -48,6 +51,10 @@ public class CrateManager {
 
             String name = crateSection.getString("name");
             int cooldown = crateSection.getInt("cooldown");
+            boolean crateKeysRequired = crateSection.getBoolean("keys.required", true);
+            List<String> crateKeysAllowed = crateSection.getStringList("keys.allowed");
+
+            CrateKeys crateCrateKeys = new CrateKeys(crateKeysRequired, crateKeysAllowed);
 
             Logger.info("Loading crate " + identifier + " with name " + name, "CrateManager");
 
@@ -114,7 +121,7 @@ public class CrateManager {
 
             }
 
-            Crate crate = new Crate(this, identifier, name, cooldown, blocks, rewards);
+            Crate crate = new Crate(this, crateCrateKeys, identifier, name, cooldown, blocks, rewards);
             crates.put(identifier, crate);
 
         }

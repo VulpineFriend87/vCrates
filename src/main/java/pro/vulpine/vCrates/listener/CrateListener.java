@@ -1,13 +1,14 @@
 package pro.vulpine.vCrates.listener;
 
-import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import pro.vulpine.vCrates.VCrates;
 import pro.vulpine.vCrates.instance.Crate;
+import pro.vulpine.vCrates.utils.KeyUtils;
 
 public class CrateListener implements Listener {
 
@@ -24,17 +25,19 @@ public class CrateListener implements Listener {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 
             if (event.getClickedBlock() != null) {
+
                 Crate crate = plugin.getCrateManager().getCrate(event.getClickedBlock().getLocation());
 
                 if (crate != null) {
 
-                    if (event.getItem() == null || event.getItem().getType() == Material.AIR) {
+                    event.setCancelled(true);
 
-                        event.setCancelled(true);
+                    ItemStack key = event.getPlayer().getInventory().getItemInMainHand();
 
-                        crate.open(event.getPlayer());
-                    }
+                    crate.open(event.getPlayer(), KeyUtils.getKeyIdentifier(key));
+
                 }
+
             }
         }
     }

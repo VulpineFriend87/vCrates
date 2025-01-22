@@ -21,7 +21,6 @@ public class Configuration {
 
         if (!configFile.exists()) {
             plugin.saveResource(fileName, false);
-
         }
 
         this.config = YamlConfiguration.loadConfiguration(configFile);

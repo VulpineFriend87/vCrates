@@ -7,8 +7,7 @@ example:
   cooldown: 5000 # In milliseconds (1s = 1000ms) (0 = disabled)
   keys:
     required: true
-    allowed:
-      - example
+    allowed: []
   pushback:
     enabled: true
     distance: 4

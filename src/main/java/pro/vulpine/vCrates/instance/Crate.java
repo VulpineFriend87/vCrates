@@ -5,14 +5,13 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import pro.vulpine.vCrates.manager.CrateManager;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class Crate {
 
     private final CrateManager crateManager;
+
+    private final CrateKeys crateKeys;
 
     private final String identifier;
     private final String name;
@@ -21,8 +20,10 @@ public class Crate {
     private final List<Reward> rewards;
     private final Map<UUID, Long> cooldowns;
 
-    public Crate(CrateManager crateManager, String identifier, String name, int cooldown, List<Location> blocks, List<Reward> rewards) {
+    public Crate(CrateManager crateManager, CrateKeys crateKeys, String identifier, String name, int cooldown, List<Location> blocks, List<Reward> rewards) {
         this.crateManager = crateManager;
+
+        this.crateKeys = crateKeys;
 
         this.identifier = identifier;
         this.name = name;
@@ -32,7 +33,14 @@ public class Crate {
         this.cooldowns = new HashMap<>();
     }
 
-    public void open(Player player) {
+    public void open(Player player, String keyIdentifier) {
+
+        if (!crateKeys.isKeyAllowed(keyIdentifier) || keyIdentifier == null) {
+            player.sendMessage(Colorize.color(
+                    crateManager.getPlugin().getMessagesConfiguration().getString("keys.missing")
+            ));
+            return;
+        }
 
         if (!isCooledDown(player)) {
             player.sendMessage(Colorize.color(
@@ -72,6 +80,14 @@ public class Crate {
         }
 
         return true;
+    }
+
+    public CrateManager getCrateManager() {
+        return crateManager;
+    }
+
+    public CrateKeys getCrateKeys() {
+        return crateKeys;
     }
 
     public String getIdentifier() {

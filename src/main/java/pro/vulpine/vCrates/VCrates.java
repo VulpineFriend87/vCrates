@@ -2,10 +2,12 @@ package pro.vulpine.vCrates;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import pro.vulpine.vCrates.configuration.CratesConfiguration;
+import pro.vulpine.vCrates.configuration.KeysConfiguration;
 import pro.vulpine.vCrates.configuration.MainConfiguration;
 import pro.vulpine.vCrates.configuration.MessagesConfiguration;
 import pro.vulpine.vCrates.listener.CrateListener;
 import pro.vulpine.vCrates.manager.CrateManager;
+import pro.vulpine.vCrates.manager.KeyManager;
 import pro.vulpine.vCrates.utils.Logger;
 import pro.vulpine.vCrates.utils.ActionParser;
 
@@ -14,10 +16,12 @@ public final class VCrates extends JavaPlugin {
     private MainConfiguration mainConfiguration;
     private MessagesConfiguration messagesConfiguration;
     private CratesConfiguration cratesConfiguration;
+    private KeysConfiguration keysConfiguration;
 
     private ActionParser actionParser;
 
     private CrateManager crateManager;
+    private KeyManager keyManager;
 
     @Override
     public void onEnable() {
@@ -43,10 +47,12 @@ public final class VCrates extends JavaPlugin {
         mainConfiguration = new MainConfiguration(this);
         messagesConfiguration = new MessagesConfiguration(this);
         cratesConfiguration = new CratesConfiguration(this);
+        keysConfiguration = new KeysConfiguration(this);
 
         actionParser = new ActionParser(this);
 
         crateManager = new CrateManager(this);
+        keyManager = new KeyManager(this);
 
         getServer().getPluginManager().registerEvents(new CrateListener(this), this);
 
@@ -65,12 +71,20 @@ public final class VCrates extends JavaPlugin {
         return cratesConfiguration;
     }
 
+    public KeysConfiguration getKeysConfiguration() {
+        return keysConfiguration;
+    }
+
     public ActionParser getActionParser() {
         return actionParser;
     }
 
     public CrateManager getCrateManager() {
         return crateManager;
+    }
+
+    public KeyManager getKeyManager() {
+        return keyManager;
     }
 
 }

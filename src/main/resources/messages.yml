@@ -2,4 +2,6 @@
 # By VulpineFriend87
 
 crates:
-  cooldown: "&cYou must wait %time% seconds before opening a crate again." # Placeholders: %time%
+  cooldown: "&cYou must wait %time% seconds before opening this crate again." # Placeholders: %time%
+keys:
+  missing: "&cYou don't have the key to open this crate."
