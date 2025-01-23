@@ -1,0 +1,15 @@
+# vCrates - Messages configuration
+# By VulpineFriend87
+
+crates:
+  cooldown:
+    - "[MESSAGE] player; &cYou must wait %cooldown%s before opening this crate again."
+    - "[TITLE] player; &c&lERROR!; &7Wait %cooldown%s and try again."
+    - "[SOUND] player; ENTITY_VILLAGER_NO"
+keys:
+  missing:
+    - "[MESSAGE] player; &cYou don't have any keys to open this crate."
+    - "[TITLE] player; &c&lERROR!; &7You don't have the required key."
+    - "[SOUND] player; ENTITY_VILLAGER_NO"
+
+unknown_command: "&7[&3v&bCrates&7] &cUnknown command. &7Use &b/vcrates help &7to see the available commands."

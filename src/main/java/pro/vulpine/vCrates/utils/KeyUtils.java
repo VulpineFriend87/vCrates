@@ -9,7 +9,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class KeyUtils {
 
-    private static final NamespacedKey keyIdentifier = new NamespacedKey("vcrates", "identifier");
+    private static final NamespacedKey keyIdentifier = new NamespacedKey("vcrates_key", "identifier");
 
     public static ItemStack generateKey(String identifier, String name, Material item) {
 
@@ -27,28 +27,7 @@ public class KeyUtils {
 
     }
 
-    public static boolean isValidKey(ItemStack key, String identifier) {
-
-        ItemMeta meta = key.getItemMeta();
-
-        boolean hasIdentifier = meta.getPersistentDataContainer().has(keyIdentifier, PersistentDataType.STRING);
-
-        String storedIdentifier = hasIdentifier ? meta.getPersistentDataContainer().get(keyIdentifier, PersistentDataType.STRING) : null;
-
-        boolean matchesIdentifier = storedIdentifier != null && storedIdentifier.equals(identifier);
-
-        return hasIdentifier && matchesIdentifier;
-
+    public static NamespacedKey getKeyIdentifier() {
+        return keyIdentifier;
     }
-
-    public static String getKeyIdentifier(ItemStack key) {
-
-        ItemMeta meta = key.getItemMeta();
-
-        if (meta == null) return null;
-
-        return meta.getPersistentDataContainer().get(keyIdentifier, PersistentDataType.STRING);
-
-    }
-
 }

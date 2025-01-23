@@ -8,7 +8,6 @@ website: https://vulpine.pro
 commands:
     vcrates:
         description: "Main command"
-        usage: "/vcrates <arguments>"
         aliases:
           - vc
           - crates

@@ -5,10 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import pro.vulpine.vCrates.VCrates;
 import pro.vulpine.vCrates.configuration.CratesConfiguration;
-import pro.vulpine.vCrates.instance.Crate;
-import pro.vulpine.vCrates.instance.CrateKeys;
-import pro.vulpine.vCrates.instance.Reward;
-import pro.vulpine.vCrates.instance.RewardItem;
+import pro.vulpine.vCrates.instance.*;
 import pro.vulpine.vCrates.utils.Logger;
 
 import java.util.*;
@@ -22,6 +19,10 @@ public class CrateManager {
     public CrateManager(VCrates plugin) {
         this.plugin = plugin;
 
+        loadCrates(plugin.getCratesConfiguration());
+    }
+
+    public void reload() {
         loadCrates(plugin.getCratesConfiguration());
     }
 
@@ -51,12 +52,15 @@ public class CrateManager {
 
             String name = crateSection.getString("name");
             int cooldown = crateSection.getInt("cooldown");
+
             boolean crateKeysRequired = crateSection.getBoolean("keys.required", true);
             List<String> crateKeysAllowed = crateSection.getStringList("keys.allowed");
-
             CrateKeys crateCrateKeys = new CrateKeys(crateKeysRequired, crateKeysAllowed);
 
-            Logger.info("Loading crate " + identifier + " with name " + name, "CrateManager");
+            boolean pushbackEnabled = crateSection.getBoolean("pushback.enabled", true);
+            double pushbackYOffset = crateSection.getDouble("pushback.y_offset", -0.4);
+            double pushbackMultiply = crateSection.getDouble("pushback.multiply", -1.25);
+            CratePushback crateCratePushback = new CratePushback(pushbackEnabled, pushbackYOffset, pushbackMultiply);
 
             List<Location> blocks = new ArrayList<>();
             List<String> blocksStrings = crateSection.getStringList("blocks");
@@ -121,7 +125,7 @@ public class CrateManager {
 
             }
 
-            Crate crate = new Crate(this, crateCrateKeys, identifier, name, cooldown, blocks, rewards);
+            Crate crate = new Crate(this, crateCrateKeys, crateCratePushback, identifier, name, cooldown, blocks, rewards);
             crates.put(identifier, crate);
 
         }

@@ -21,6 +21,10 @@ public class KeyManager {
         this.plugin = plugin;
     }
 
+    public void reload() {
+        loadKeys(plugin.getKeysConfiguration());
+    }
+
     private void loadKeys(KeysConfiguration config) {
 
         keys.clear();
@@ -48,12 +52,12 @@ public class KeyManager {
             String name = keySection.getString("name");
             Material item = Material.valueOf(keySection.getString("item"));
 
-            Logger.info("Loading key " + identifier + " with name " + name, "KeyManager");
-
             Key key = new Key(identifier, name, item);
             keys.put(identifier, key);
 
         }
+
+        Logger.info("Loaded " + keys.size() + " key(s).", "KeyManager");
 
     }
 

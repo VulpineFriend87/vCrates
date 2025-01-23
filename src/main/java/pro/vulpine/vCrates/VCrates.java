@@ -1,10 +1,11 @@
 package pro.vulpine.vCrates;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import pro.vulpine.vCrates.command.VCratesCommand;
 import pro.vulpine.vCrates.configuration.CratesConfiguration;
 import pro.vulpine.vCrates.configuration.KeysConfiguration;
 import pro.vulpine.vCrates.configuration.MainConfiguration;
-import pro.vulpine.vCrates.configuration.MessagesConfiguration;
+import pro.vulpine.vCrates.configuration.ResponsesConfiguration;
 import pro.vulpine.vCrates.listener.CrateListener;
 import pro.vulpine.vCrates.manager.CrateManager;
 import pro.vulpine.vCrates.manager.KeyManager;
@@ -14,7 +15,7 @@ import pro.vulpine.vCrates.utils.ActionParser;
 public final class VCrates extends JavaPlugin {
 
     private MainConfiguration mainConfiguration;
-    private MessagesConfiguration messagesConfiguration;
+    private ResponsesConfiguration responsesConfiguration;
     private CratesConfiguration cratesConfiguration;
     private KeysConfiguration keysConfiguration;
 
@@ -45,7 +46,7 @@ public final class VCrates extends JavaPlugin {
         }
 
         mainConfiguration = new MainConfiguration(this);
-        messagesConfiguration = new MessagesConfiguration(this);
+        responsesConfiguration = new ResponsesConfiguration(this);
         cratesConfiguration = new CratesConfiguration(this);
         keysConfiguration = new KeysConfiguration(this);
 
@@ -53,6 +54,8 @@ public final class VCrates extends JavaPlugin {
 
         crateManager = new CrateManager(this);
         keyManager = new KeyManager(this);
+
+        getCommand("vcrates").setExecutor(new VCratesCommand(this));
 
         getServer().getPluginManager().registerEvents(new CrateListener(this), this);
 
@@ -63,8 +66,8 @@ public final class VCrates extends JavaPlugin {
     }
 
 
-    public MessagesConfiguration getMessagesConfiguration() {
-        return messagesConfiguration;
+    public ResponsesConfiguration getResponsesConfiguration() {
+        return responsesConfiguration;
     }
 
     public CratesConfiguration getCratesConfiguration() {

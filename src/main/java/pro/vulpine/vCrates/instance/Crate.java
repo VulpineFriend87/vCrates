@@ -1,8 +1,8 @@
 package pro.vulpine.vCrates.instance;
 
-import it.vulpinefriend87.easyutils.Colorize;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import pro.vulpine.vCrates.manager.CrateManager;
 
 import java.util.*;
@@ -12,6 +12,7 @@ public class Crate {
     private final CrateManager crateManager;
 
     private final CrateKeys crateKeys;
+    private final CratePushback cratePushback;
 
     private final String identifier;
     private final String name;
@@ -20,10 +21,11 @@ public class Crate {
     private final List<Reward> rewards;
     private final Map<UUID, Long> cooldowns;
 
-    public Crate(CrateManager crateManager, CrateKeys crateKeys, String identifier, String name, int cooldown, List<Location> blocks, List<Reward> rewards) {
+    public Crate(CrateManager crateManager, CrateKeys crateKeys, CratePushback cratePushback, String identifier, String name, int cooldown, List<Location> blocks, List<Reward> rewards) {
         this.crateManager = crateManager;
 
         this.crateKeys = crateKeys;
+        this.cratePushback = cratePushback;
 
         this.identifier = identifier;
         this.name = name;
@@ -33,22 +35,35 @@ public class Crate {
         this.cooldowns = new HashMap<>();
     }
 
-    public void open(Player player, String keyIdentifier) {
+    public void open(Player player, ItemStack key) {
 
-        if (!crateKeys.isKeyAllowed(keyIdentifier) || keyIdentifier == null) {
-            player.sendMessage(Colorize.color(
-                    crateManager.getPlugin().getMessagesConfiguration().getString("keys.missing")
-            ));
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("%crate%", name);
+        placeholders.put("%cooldown%", String.valueOf(getRemainingCooldown(player)));
+        placeholders.put("%player%", player.getName());
+
+        if (!crateKeys.isKeyAllowed(crateKeys.getKeyIdentifier(key)) && crateKeys.isRequired()) {
+            crateManager.getPlugin().getActionParser().executeActions(
+                    crateManager.getPlugin().getResponsesConfiguration().getStringList("keys.missing"),
+                    player, 0, placeholders
+            );
+            if (cratePushback.isEnabled()) {
+                cratePushback.execute(player, cratePushback.getYOffset(), cratePushback.getMultiply());
+            }
             return;
         }
 
         if (!isCooledDown(player)) {
-            player.sendMessage(Colorize.color(
-                    crateManager.getPlugin().getMessagesConfiguration().getString("crates.cooldown")
-                            .replace("%time%", String.valueOf(getRemainingCooldown(player)))
-            ));
+            crateManager.getPlugin().getActionParser().executeActions(
+                    crateManager.getPlugin().getResponsesConfiguration().getStringList("crates.cooldown"),
+                    player, 0, placeholders
+            );
             return;
         }
+
+        ItemStack itemInHand = player.getInventory().getItemInMainHand();
+
+        itemInHand.setAmount(itemInHand.getAmount() - 1);
 
         Reward reward = rewards.get((int) (Math.random() * rewards.size()));
 
@@ -56,7 +71,7 @@ public class Crate {
             player.getInventory().addItem(RewardItem.toItemStack(item));
         }
 
-        crateManager.getPlugin().getActionParser().executeActions(reward.getActions(), player, 0);
+        crateManager.getPlugin().getActionParser().executeActions(reward.getActions(), player, 0, placeholders);
 
         if (cooldown > 0) {
             setCooldown(player);
@@ -65,8 +80,12 @@ public class Crate {
     }
 
     private double getRemainingCooldown(Player player) {
-        long remaining = cooldown - (System.currentTimeMillis() - cooldowns.get(player.getUniqueId()));
-        return (double) Math.round(remaining / 1000.0 * 100.0) / 100.0;
+        if (cooldowns.containsKey(player.getUniqueId())) {
+            long remaining = cooldown - (System.currentTimeMillis() - cooldowns.get(player.getUniqueId()));
+            return remaining > 0 ? (double) Math.round(remaining / 1000.0 * 100.0) / 100.0 : 0;
+        }
+
+        return 0;
     }
 
     private void setCooldown(Player player) {

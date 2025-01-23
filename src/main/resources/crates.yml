@@ -10,7 +10,8 @@ example:
     allowed: []
   pushback:
     enabled: true
-    distance: 4
+    y_offset: -0.4
+    multiply: -1.25
   effect:
     enabled: true
     type: AURA

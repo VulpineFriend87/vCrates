@@ -8,7 +8,6 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import pro.vulpine.vCrates.VCrates;
 import pro.vulpine.vCrates.instance.Crate;
-import pro.vulpine.vCrates.utils.KeyUtils;
 
 public class CrateListener implements Listener {
 
@@ -34,7 +33,7 @@ public class CrateListener implements Listener {
 
                     ItemStack key = event.getPlayer().getInventory().getItemInMainHand();
 
-                    crate.open(event.getPlayer(), KeyUtils.getKeyIdentifier(key));
+                    crate.open(event.getPlayer(), key);
 
                 }
 

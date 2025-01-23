@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import pro.vulpine.vCrates.VCrates;
 
 import java.util.List;
+import java.util.Map;
 
 public class ActionParser {
 
@@ -18,7 +19,7 @@ public class ActionParser {
         this.plugin = plugin;
     }
 
-    public void executeActions(List<String> actions, Player player, int currentIndex) {
+    public void executeActions(List<String> actions, Player player, int currentIndex, Map<String, String> placeholders) {
 
         for (int i = currentIndex; i < actions.size(); i++) {
 
@@ -42,15 +43,15 @@ public class ActionParser {
                         break;
 
                     case "TITLE":
-                        executeTitle(params, player);
+                        executeTitle(params, player, placeholders);
                         break;
 
                     case "ACTIONBAR":
-                        executeActionBar(params, player);
+                        executeActionBar(params, player, placeholders);
                         break;
 
                     case "MESSAGE":
-                        executeMessage(params, player);
+                        executeMessage(params, player, placeholders);
                         break;
 
                     case "SOUND":
@@ -58,7 +59,7 @@ public class ActionParser {
                         break;
 
                     case "DELAY":
-                        executeDelay(params, actions, player, i + 1);
+                        executeDelay(params, actions, player, i + 1, placeholders);
                         return;
 
                     default:
@@ -91,7 +92,7 @@ public class ActionParser {
 
     }
 
-    private void executeTitle(String params, Player player) {
+    private void executeTitle(String params, Player player, Map<String, String> placeholders) {
 
         String[] parts = params.split(";");
 
@@ -103,6 +104,9 @@ public class ActionParser {
         int stay = parts.length > 4 ? Integer.parseInt(parts[4].trim()) : 40;
         int fadeOut = parts.length > 5 ? Integer.parseInt(parts[5].trim()) : 10;
 
+        title = replacePlaceholders(title, placeholders);
+        subtitle = replacePlaceholders(subtitle, placeholders);
+
         if (target.equalsIgnoreCase("global")) {
             for (Player p : Bukkit.getOnlinePlayers()) {
                 p.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
@@ -113,12 +117,12 @@ public class ActionParser {
 
     }
 
-    private void executeActionBar(String params, Player player) {
+    private void executeActionBar(String params, Player player, Map<String, String> placeholders) {
 
         String[] parts = params.split(";", 2);
 
         String target = parts[0].trim();
-        String message = Colorize.color(parts[1].trim());
+        String message = Colorize.color(replacePlaceholders(parts[1].trim(), placeholders));
 
         if (target.equalsIgnoreCase("global")) {
             for (Player p : Bukkit.getOnlinePlayers()) {
@@ -130,12 +134,14 @@ public class ActionParser {
 
     }
 
-    private void executeMessage(String params, Player player) {
+    private void executeMessage(String params, Player player, Map<String, String> placeholders) {
 
         String[] parts = params.split(";", 2);
 
         String target = parts[0].trim();
         String message = Colorize.color(parts[1].trim());
+
+        message = replacePlaceholders(message, placeholders);
 
         if (target.equalsIgnoreCase("global")) {
             for (Player p : Bukkit.getOnlinePlayers()) {
@@ -168,12 +174,21 @@ public class ActionParser {
 
     }
 
-    private void executeDelay(String params, List<String> actions, Player player, int nextIndex) {
+    private void executeDelay(String params, List<String> actions, Player player, int nextIndex, Map<String, String> placeholders) {
 
         int delay = Integer.parseInt(params.trim());
 
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> executeActions(actions, player, nextIndex), delay / 50L);
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> executeActions(actions, player, nextIndex, placeholders), delay / 50L);
 
+    }
+
+    private String replacePlaceholders(String str, Map<String, String> placeholders) {
+
+        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+            str = str.replace(entry.getKey(), entry.getValue());
+        }
+
+        return str;
     }
 
 }
