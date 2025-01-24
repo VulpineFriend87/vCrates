@@ -1,4 +1,4 @@
-package pro.vulpine.vCrates.instance;
+package pro.vulpine.vCrates.instance.crate;
 
 import it.vulpinefriend87.easyutils.Colorize;
 import org.bukkit.Material;

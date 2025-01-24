@@ -5,7 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import pro.vulpine.vCrates.VCrates;
 import pro.vulpine.vCrates.configuration.CratesConfiguration;
-import pro.vulpine.vCrates.instance.*;
+import pro.vulpine.vCrates.instance.crate.*;
 import pro.vulpine.vCrates.utils.Logger;
 
 import java.util.*;
@@ -28,7 +28,7 @@ public class CrateManager {
 
     private void loadCrates(CratesConfiguration config) {
 
-        crates.clear();
+        unloadCrates();
 
         Set<String> crateKeys = config.getKeys(false);
 
@@ -80,6 +80,11 @@ public class CrateManager {
                 }
             }
 
+            boolean hologramEnabled = crateSection.getBoolean("hologram.enabled", true);
+            List<String> hologramLines = crateSection.getStringList("hologram.lines");
+            double hologramYOffset = crateSection.getDouble("hologram.y_offset", 0);
+            CrateHologram crateCrateHologram = new CrateHologram(hologramEnabled, blocks, hologramLines, hologramYOffset);
+
             List<Reward> rewards = new ArrayList<>();
 
             ConfigurationSection rewardsSection = crateSection.getConfigurationSection("rewards");
@@ -125,13 +130,22 @@ public class CrateManager {
 
             }
 
-            Crate crate = new Crate(this, crateCrateKeys, crateCratePushback, identifier, name, cooldown, blocks, rewards);
+            Crate crate = new Crate(this, crateCrateKeys, crateCratePushback, crateCrateHologram, identifier, name, cooldown, blocks, rewards);
             crates.put(identifier, crate);
 
         }
 
         Logger.info("Loaded " + crates.size() + " crate(s).", "CrateManager");
 
+    }
+
+    public void unloadCrates() {
+
+        for (Crate crate : crates.values()) {
+            crate.getCrateHologram().remove();
+        }
+
+        crates.clear();
     }
 
     public Crate getCrate(String identifier) {

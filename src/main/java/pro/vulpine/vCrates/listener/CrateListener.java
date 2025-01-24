@@ -7,7 +7,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import pro.vulpine.vCrates.VCrates;
-import pro.vulpine.vCrates.instance.Crate;
+import pro.vulpine.vCrates.instance.crate.Crate;
 
 public class CrateListener implements Listener {
 

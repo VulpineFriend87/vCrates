@@ -19,6 +19,7 @@ example:
     particle: ELECTRIC_SPARK
   hologram:
     enabled: true
+    y_offset: 0
     lines:
       - "&9&lEXAMPLE CRATE"
       - "&7Left click to preview"

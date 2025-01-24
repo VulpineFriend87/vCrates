@@ -61,6 +61,11 @@ public final class VCrates extends JavaPlugin {
 
     }
 
+    @Override
+    public void onDisable() {
+        crateManager.unloadCrates();
+    }
+
     public MainConfiguration getMainConfiguration() {
         return mainConfiguration;
     }

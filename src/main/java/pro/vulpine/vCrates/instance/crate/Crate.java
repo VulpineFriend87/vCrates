@@ -1,4 +1,4 @@
-package pro.vulpine.vCrates.instance;
+package pro.vulpine.vCrates.instance.crate;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -13,6 +13,7 @@ public class Crate {
 
     private final CrateKeys crateKeys;
     private final CratePushback cratePushback;
+    private final CrateHologram crateHologram;
 
     private final String identifier;
     private final String name;
@@ -21,11 +22,12 @@ public class Crate {
     private final List<Reward> rewards;
     private final Map<UUID, Long> cooldowns;
 
-    public Crate(CrateManager crateManager, CrateKeys crateKeys, CratePushback cratePushback, String identifier, String name, int cooldown, List<Location> blocks, List<Reward> rewards) {
+    public Crate(CrateManager crateManager, CrateKeys crateKeys, CratePushback cratePushback, CrateHologram crateHologram, String identifier, String name, int cooldown, List<Location> blocks, List<Reward> rewards) {
         this.crateManager = crateManager;
 
         this.crateKeys = crateKeys;
         this.cratePushback = cratePushback;
+        this.crateHologram = crateHologram;
 
         this.identifier = identifier;
         this.name = name;
@@ -58,6 +60,7 @@ public class Crate {
                     crateManager.getPlugin().getResponsesConfiguration().getStringList("crates.cooldown"),
                     player, 0, placeholders
             );
+
             return;
         }
 
@@ -107,6 +110,14 @@ public class Crate {
 
     public CrateKeys getCrateKeys() {
         return crateKeys;
+    }
+
+    public CratePushback getCratePushback() {
+        return cratePushback;
+    }
+
+    public CrateHologram getCrateHologram() {
+        return crateHologram;
     }
 
     public String getIdentifier() {
