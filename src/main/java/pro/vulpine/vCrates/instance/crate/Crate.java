@@ -64,9 +64,13 @@ public class Crate {
             return;
         }
 
-        ItemStack itemInHand = player.getInventory().getItemInMainHand();
+        if (crateKeys.isRequired()) {
 
-        itemInHand.setAmount(itemInHand.getAmount() - 1);
+            ItemStack itemInHand = player.getInventory().getItemInMainHand();
+
+            itemInHand.setAmount(itemInHand.getAmount() - 1);
+
+        }
 
         Reward reward = rewards.get((int) (Math.random() * rewards.size()));
 
