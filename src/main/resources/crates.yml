@@ -1,61 +1,61 @@
 # vCrates - Crates configuration
 # By VulpineFriend87
 
-example:
-  blocks: []
-  name: Example Crate
-  cooldown: 5000 # In milliseconds (1s = 1000ms) (0 = disabled)
-  keys:
-    required: true
-    allowed: []
-  pushback:
-    enabled: true
-    y_offset: -0.4
-    multiply: -1.25
-  effect:
-    enabled: true
-    type: AURA
-    color: RED
-    particle: ELECTRIC_SPARK
-  hologram:
-    enabled: true
-    y_offset: 0
-    lines:
-      - "&9&lEXAMPLE CRATE"
-      - "&7Left click to preview"
-      - "&7Right click to open"
-  milestone:
-    repeats: false
-    list:
-      - after: 5
-        rewards:
-          - example
-      - after: 10
-        rewards:
-          - example
-  rewards:
-    example:
-      name: "&9&lEXAMPLE REWARD"
-      display_item: DIAMOND_BLOCK
-      items:
-        - name: "&9&lEXAMPLE ITEM"
-          lore:
-            - "&7This is an example reward"
-          type: DIAMOND_BLOCK
-          amount: 1
+# Template
+#
+# crate_identifier: # Change this to your crate identifier (must be unique)
+#   blocks: [] # List of blocks that can be opened by the crate (format: "world,x,y,z")
+#   name: "&9&lEXAMPLE CRATE" # Name of the crate
+#   cooldown: 5000 # Per player cooldown in milliseconds (1s = 1000ms) (0 = disabled)
+#   keys:
+#     required: true # Is a key required to open the crate?
+#     allowed: [] # List of key identifiers that are allowed to open the crate
+#   pushback: # Pushes the player back when they can't open the crate (missing key, cooldown, etc.)
+#     enabled: true # Is pushback enabled?
+#     y_offset: -0.4 # Y offset of the pushback
+#     multiply: -1.25 # Multiply the pushback by this amount
+#   effect: # Displays an effect when the crate is opened
+#     enabled: true # Is effect enabled?
+#     type: AURA # Type of effect (todo add list and implement)
+#     color: RED # Color of the effect
+#     particle: ELECTRIC_SPARK # Particle of the effect
+#   hologram: # Displays a hologram when the crate is opened
+#     enabled: true # Is hologram enabled?
+#     y_offset: 0 # Y offset of the hologram
+#     lines: # List of lines of the hologram
+#       - "&9&lEXAMPLE CRATE"
+#       - "&7Left click to preview"
+#       - "&7Right click to open"
+#   milestone: # Gives the player a reward if they open the crate a certain amount of times
+#     repeats: false # Does the milestone repeat?
+#     list: # List of milestones
+#       - after: 5 # After this many rewards
+#         rewards:
+#           - example # Reward identifier (specified in the crate rewards)
+#       - after: 10 # After this many rewards
+#         rewards:
+#           - example # Reward identifier (specified in the crate rewards)
+#   rewards: # List of rewards
+#     example: # Reward identifier
+#       name: "&9&lEXAMPLE REWARD" # Display name of the reward (used in placeholders)
+#       display_item: DIAMOND_BLOCK # Display item of the reward
+#       items: # List of items that will be given to the player when they win this reward
+#         - name: "&9&lEXAMPLE ITEM" # Display name of the item
+#           lore: # Lore of the item
+#             - "&7This is an example reward"
+#           type: DIAMOND_BLOCK # Item type
+#           amount: 1 # Item amount
+#       actions: [] # List of actions that will be executed when the player wins this reward (see Action template below)
+#
 
-      # Possible actions: COMMAND, TITLE, ACTIONBAR, MESSAGE, SOUND, DELAY
-      # Formats:
-      #  - "[COMMAND] console/player; command without slash" -> Executes the command on the console/player
-      #  - "[TITLE] global/player; title; subtitle; fadeIn; stay; fadeOut" -> Displays a title on the global/player
-      #  - "[ACTIONBAR] global/player; message" -> Displays an actionbar on the global/player
-      #  - "[MESSAGE] global/player; message" -> Displays a message on the global/player
-      #  - "[SOUND] global/player; sound; volume; pitch" -> Plays a sound on the global/player
-      #  - "[DELAY] milliseconds" -> Delays the execution of the next action
-      actions:
-        - "[COMMAND] console; say hello world"
-        - "[DELAY] 1000"
-        - "[TITLE] player; &9&lEXAMPLE DELAYED TITLE; &7This is an example delayed title; 10; 40; 10"
-        - "[DELAY] 1000"
-        - "[ACTIONBAR] player; &9&lEXAMPLE DELAYED ACTIONBAR"
-        - "[MESSAGE] player; &9&lEXAMPLE MESSAGE"
+# Action template:
+#
+# <required> [optional]
+#
+# - "[COMMAND] <console/player>; <command without slash>"
+# - "[TITLE] <global/player>; <title>; [subtitle]; [fadeIn]; [stay]; [fadeOut]"
+# - "[ACTIONBAR] <global/player>; <message>"
+# - "[MESSAGE] <global/player>; <message>"
+# - "[SOUND] <global/player>; <sound>; [volume]; [pitch]"
+# - "[DELAY] <milliseconds>"
+#

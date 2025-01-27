@@ -1,13 +1,25 @@
-# vCrates - Messages configuration
+# vCrates - Responses configuration
 # By VulpineFriend87
 
+# Action template:
+#
+# <required> [optional]
+#
+# - "[COMMAND] <console/player>; <command without slash>"
+# - "[TITLE] <global/player>; <title>; [subtitle]; [fadeIn]; [stay]; [fadeOut]"
+# - "[ACTIONBAR] <global/player>; <message>"
+# - "[MESSAGE] <global/player>; <message>"
+# - "[SOUND] <global/player>; <sound>; [volume]; [pitch]"
+# - "[DELAY] <milliseconds>"
+#
+
 crates:
-  cooldown:
+  cooldown: # List of actions (see Action template above)
     - "[TITLE] player; &c&lERROR!; &7Wait %cooldown%s and try again."
     - "[SOUND] player; ENTITY_VILLAGER_NO"
 keys:
-  missing:
+  missing: # List of actions (see Action template above)
     - "[TITLE] player; &c&lERROR!; &7You don't have the required key."
     - "[SOUND] player; ENTITY_VILLAGER_NO"
 
-unknown_command: "&7[&3v&bCrates&7] &cUnknown command. &7Use &b/vcrates help &7to see the available commands."
+unknown_command: "&7[&3v&bCrates&7] &cUnknown command. &7Use &b/vcrates help &7to see the available commands." # Message

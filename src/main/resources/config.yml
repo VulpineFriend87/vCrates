@@ -2,9 +2,13 @@
 # By VulpineFriend87
 
 storage:
-  method: H2 # H2 or MYSQL
 
-  # MySQL
+  # H2 or MYSQL
+  # H2: creates a local h2 database in a file
+  # MYSQL: uses an existing mysql database
+  method: H2
+
+  # These settings are only required for MYSQL (they will be ignored if method is H2)
   host: localhost
   port: 3306
   database: vcrates

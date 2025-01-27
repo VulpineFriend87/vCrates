@@ -1,7 +1,9 @@
-# vCrates - Crates configuration
+# vCrates - Keys configuration
 # By VulpineFriend87
 
-example:
-  virtual_allowed: true
-  name: "&9&lEXAMPLE KEY"
-  item: TRIPWIRE_HOOK
+# Template:
+#
+# key_identifier: # Change this to your key identifier (must be unique)
+#   virtual_allowed: true # Set to true if you want it to be possible to deposit/withdraw this key
+#   name: "&9&lEXAMPLE KEY" # Display name
+#   item: TRIPWIRE_HOOK # Item type
