@@ -23,7 +23,7 @@ public class ProfileManager {
 
     private void createTables() {
 
-        String query = "CREATE TABLE IF NOT EXISTS keys (" +
+        String query = "CREATE TABLE IF NOT EXISTS `keys` (" +
                 " owner VARCHAR(32) NOT NULL," +
                 " key_type VARCHAR(255) NOT NULL," +
                 " key_count INT NOT NULL," +
@@ -49,7 +49,7 @@ public class ProfileManager {
 
         }
 
-        String query = "SELECT key_type, key_count FROM keys WHERE owner = ?";
+        String query = "SELECT key_type, key_count FROM `keys` WHERE owner = ?";
 
         plugin.getStorageManager().executeQuery(query, owner).thenAccept(rs -> {
 
