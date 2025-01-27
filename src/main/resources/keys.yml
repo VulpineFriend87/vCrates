@@ -2,5 +2,6 @@
 # By VulpineFriend87
 
 example:
+  virtual_allowed: true
   name: "&9&lEXAMPLE KEY"
   item: TRIPWIRE_HOOK

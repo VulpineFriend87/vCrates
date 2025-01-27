@@ -1,3 +1,12 @@
 # vCrates - Main configuration
 # By VulpineFriend87
 
+storage:
+  method: H2 # H2 or MYSQL
+
+  # MySQL
+  host: localhost
+  port: 3306
+  database: vcrates
+  username: vcrates
+  password: vcrates
