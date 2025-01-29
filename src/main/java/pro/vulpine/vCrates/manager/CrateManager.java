@@ -23,12 +23,14 @@ public class CrateManager {
     }
 
     public void reload() {
+
+        unloadCrates();
+
         loadCrates(plugin.getCratesConfiguration());
+
     }
 
     private void loadCrates(CratesConfiguration config) {
-
-        unloadCrates();
 
         Set<String> crateKeys = config.getKeys(false);
 

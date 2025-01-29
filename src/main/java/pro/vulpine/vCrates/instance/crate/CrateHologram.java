@@ -74,6 +74,7 @@ public class CrateHologram {
     }
 
     public void remove() {
+
         for (ArmorStand armorStand : armorStands) {
 
             if (!armorStand.isDead()) {

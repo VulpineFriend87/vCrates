@@ -87,12 +87,16 @@ public class Crate {
     }
 
     private double getRemainingCooldown(Player player) {
+
         if (cooldowns.containsKey(player.getUniqueId())) {
+
             long remaining = cooldown - (System.currentTimeMillis() - cooldowns.get(player.getUniqueId()));
             return remaining > 0 ? (double) Math.round(remaining / 1000.0 * 100.0) / 100.0 : 0;
+
         }
 
         return 0;
+
     }
 
     private void setCooldown(Player player) {
