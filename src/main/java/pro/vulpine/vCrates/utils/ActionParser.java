@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import pro.vulpine.vCrates.VCrates;
+import pro.vulpine.vCrates.utils.logger.Logger;
 
 import java.util.List;
 import java.util.Map;

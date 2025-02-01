@@ -6,7 +6,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import pro.vulpine.vCrates.VCrates;
 import pro.vulpine.vCrates.configuration.CratesConfiguration;
 import pro.vulpine.vCrates.instance.crate.*;
-import pro.vulpine.vCrates.utils.Logger;
+import pro.vulpine.vCrates.utils.logger.Logger;
 
 import java.util.*;
 
@@ -36,7 +36,7 @@ public class CrateManager {
 
         if (crateKeys.isEmpty()) {
 
-            Logger.error("No crates found, please add them.", "CrateManager");
+            Logger.warn("No crates found, please add them.", "CrateManager");
             return;
 
         }
