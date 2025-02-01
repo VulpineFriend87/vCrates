@@ -5,7 +5,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import pro.vulpine.vCrates.VCrates;
 import pro.vulpine.vCrates.configuration.KeysConfiguration;
 import pro.vulpine.vCrates.instance.Key;
-import pro.vulpine.vCrates.utils.Logger;
+import pro.vulpine.vCrates.utils.logger.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +19,8 @@ public class KeyManager {
 
     public KeyManager(VCrates plugin) {
         this.plugin = plugin;
+
+        loadKeys(plugin.getKeysConfiguration());
     }
 
     public void reload() {
