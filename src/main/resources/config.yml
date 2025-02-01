@@ -14,3 +14,10 @@ storage:
   database: vcrates
   username: vcrates
   password: vcrates
+
+# Logging
+# Possible values: INFO, WARN, ERROR
+# INFO: Logs everything
+# WARN: Only logs warnings and errors
+# ERROR: Only logs errors
+logging_level: INFO

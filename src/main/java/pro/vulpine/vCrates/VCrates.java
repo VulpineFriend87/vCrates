@@ -13,7 +13,8 @@ import pro.vulpine.vCrates.manager.CrateManager;
 import pro.vulpine.vCrates.manager.KeyManager;
 import pro.vulpine.vCrates.manager.ProfileManager;
 import pro.vulpine.vCrates.manager.StorageManager;
-import pro.vulpine.vCrates.utils.Logger;
+import pro.vulpine.vCrates.utils.logger.Level;
+import pro.vulpine.vCrates.utils.logger.Logger;
 import pro.vulpine.vCrates.utils.ActionParser;
 
 public final class VCrates extends JavaPlugin {
@@ -34,6 +35,21 @@ public final class VCrates extends JavaPlugin {
     @Override
     public void onEnable() {
 
+        mainConfiguration = new MainConfiguration(this);
+        responsesConfiguration = new ResponsesConfiguration(this);
+        cratesConfiguration = new CratesConfiguration(this);
+        keysConfiguration = new KeysConfiguration(this);
+
+        try {
+
+            Logger.initialize(Level.valueOf(mainConfiguration.getString("logging_level", "INFO")));
+
+        } catch (IllegalArgumentException e) {
+
+            Logger.initialize(Level.INFO);
+
+        }
+
         String[] ascii = {
                 "",
                 "&b          _________                __                 ",
@@ -49,13 +65,8 @@ public final class VCrates extends JavaPlugin {
         };
 
         for (String line : ascii) {
-            Logger.info(line);
+            Logger.system(line);
         }
-
-        mainConfiguration = new MainConfiguration(this);
-        responsesConfiguration = new ResponsesConfiguration(this);
-        cratesConfiguration = new CratesConfiguration(this);
-        keysConfiguration = new KeysConfiguration(this);
 
         actionParser = new ActionParser(this);
 
