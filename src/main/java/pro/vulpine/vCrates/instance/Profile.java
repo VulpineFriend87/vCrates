@@ -19,6 +19,42 @@ public class Profile {
         this.keys = keys;
     }
 
+    public void updateKey(String identifier, int amount) {
+
+        keys.put(identifier, amount);
+
+        profileManager.getPlugin().getProfileManager().updateProfile(this);
+
+    }
+
+    public void giveKey(String identifier, int amount) {
+
+        keys.put(identifier, keys.getOrDefault(identifier, 0) + amount);
+
+        profileManager.getPlugin().getProfileManager().updateProfile(this);
+
+    }
+
+    public void takeKey(String identifier, int amount) {
+
+        keys.put(identifier, keys.getOrDefault(identifier, 0) - amount);
+
+        profileManager.getPlugin().getProfileManager().updateProfile(this);
+
+    }
+
+    public int getKeyCount(String identifier) {
+
+        return keys.getOrDefault(identifier, 0);
+
+    }
+
+    public boolean hasKey(String identifier) {
+
+        return keys.containsKey(identifier);
+
+    }
+
     public ProfileManager getProfileManager() {
         return profileManager;
     }
