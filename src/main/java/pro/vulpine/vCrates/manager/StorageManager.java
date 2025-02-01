@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import pro.vulpine.vCrates.VCrates;
 import pro.vulpine.vCrates.instance.StorageMethod;
+import pro.vulpine.vCrates.utils.logger.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -137,6 +138,27 @@ public class StorageManager {
             }
 
         });
+
+    }
+
+    public void closeResources(AutoCloseable... resources) {
+
+        for (AutoCloseable resource : resources) {
+
+            if (resource != null) {
+
+                try {
+
+                    resource.close();
+
+                } catch (Exception e) {
+
+                    Logger.error("Error while closing resource: " + resource, "StorageManager");
+
+                }
+
+            }
+        }
 
     }
 
