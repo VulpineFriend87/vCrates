@@ -2,18 +2,18 @@ package pro.vulpine.vCrates.command.subcommands;
 
 import it.vulpinefriend87.easyutils.Colorize;
 import org.bukkit.command.CommandSender;
-import pro.vulpine.vCrates.VCrates;
+import pro.vulpine.vCrates.command.VCratesCommand;
 import pro.vulpine.vCrates.instance.SubCommand;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class ReloadCommand implements SubCommand {
+public class ReloadSubCommand implements SubCommand {
 
-    private final VCrates plugin;
+    private final VCratesCommand command;
 
-    public ReloadCommand(VCrates plugin) {
-        this.plugin = plugin;
+    public ReloadSubCommand(VCratesCommand command) {
+        this.command = command;
     }
 
     @Override
@@ -31,17 +31,17 @@ public class ReloadCommand implements SubCommand {
 
         long configStartTime = System.currentTimeMillis();
 
-        plugin.getMainConfiguration().reload();
-        plugin.getMainConfiguration().save();
+        command.getPlugin().getMainConfiguration().reload();
+        command.getPlugin().getMainConfiguration().save();
 
-        plugin.getCratesConfiguration().reload();
-        plugin.getCratesConfiguration().save();
+        command.getPlugin().getCratesConfiguration().reload();
+        command.getPlugin().getCratesConfiguration().save();
 
-        plugin.getKeysConfiguration().reload();
-        plugin.getKeysConfiguration().save();
+        command.getPlugin().getKeysConfiguration().reload();
+        command.getPlugin().getKeysConfiguration().save();
 
-        plugin.getResponsesConfiguration().reload();
-        plugin.getResponsesConfiguration().save();
+        command.getPlugin().getResponsesConfiguration().reload();
+        command.getPlugin().getResponsesConfiguration().save();
 
         sender.sendMessage(Colorize.color(
                 "&7[&3v&bCrates&7] &aConfiguration files reloaded in &7(" + (System.currentTimeMillis() - configStartTime) + "ms)"
@@ -53,7 +53,7 @@ public class ReloadCommand implements SubCommand {
 
         long crateManagerStartTime = System.currentTimeMillis();
 
-        plugin.getCrateManager().reload();
+        command.getPlugin().getCrateManager().reload();
 
         sender.sendMessage(Colorize.color(
                 "&7[&3v&bCrates&7] &aCrate manager reloaded in &7(" + (System.currentTimeMillis() - crateManagerStartTime) + "ms)"
@@ -65,7 +65,7 @@ public class ReloadCommand implements SubCommand {
 
         long keyManagerStartTime = System.currentTimeMillis();
 
-        plugin.getKeyManager().reload();
+        command.getPlugin().getKeyManager().reload();
 
         sender.sendMessage(Colorize.color(
                 "&7[&3v&bCrates&7] &aKey manager reloaded in &7(" + (System.currentTimeMillis() - keyManagerStartTime) + "ms)"
@@ -78,7 +78,7 @@ public class ReloadCommand implements SubCommand {
     }
 
     @Override
-    public List<String> tabComplete(CommandSender sender, String[] args) {
-        return new ArrayList<>();
+    public List<String> executeTabComplete(CommandSender sender, String[] args) {
+        return Collections.emptyList();
     }
 }
