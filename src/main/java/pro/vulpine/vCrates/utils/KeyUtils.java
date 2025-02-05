@@ -27,6 +27,16 @@ public class KeyUtils {
 
     }
 
+    public static String getKeyIdentifier(ItemStack key) {
+
+        ItemMeta meta = key.getItemMeta();
+
+        if (meta == null) return null;
+
+        return meta.getPersistentDataContainer().get(KeyUtils.getKeyIdentifier(), PersistentDataType.STRING);
+
+    }
+
     public static NamespacedKey getKeyIdentifier() {
         return keyIdentifier;
     }
