@@ -8,6 +8,6 @@ public interface SubCommand {
 
     void execute(CommandSender sender, String[] args);
 
-    List<String> tabComplete(CommandSender sender, String[] args);
+    List<String> executeTabComplete(CommandSender sender, String[] args);
 
 }

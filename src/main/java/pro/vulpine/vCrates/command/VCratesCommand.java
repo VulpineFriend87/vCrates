@@ -8,25 +8,28 @@ import org.bukkit.command.TabCompleter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.vulpine.vCrates.VCrates;
-import pro.vulpine.vCrates.command.subcommands.ReloadCommand;
+import pro.vulpine.vCrates.command.subcommands.HelpSubCommand;
+import pro.vulpine.vCrates.command.subcommands.KeySubCommand;
+import pro.vulpine.vCrates.command.subcommands.ReloadSubCommand;
 import pro.vulpine.vCrates.instance.SubCommand;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class VCratesCommand implements CommandExecutor, TabCompleter {
 
     private final VCrates plugin;
 
-    private final Map<String, SubCommand> commands = new HashMap<>();
+    private final Map<String, SubCommand> subCommands = new HashMap<>();
 
     public VCratesCommand(VCrates plugin) {
 
         this.plugin = plugin;
 
-        commands.put("reload", new ReloadCommand(plugin));
+        subCommands.put("help", new HelpSubCommand(this));
+        subCommands.put("reload", new ReloadSubCommand(this));
+        subCommands.put("key", new KeySubCommand(this));
+
     }
 
     @Override
@@ -48,10 +51,10 @@ public class VCratesCommand implements CommandExecutor, TabCompleter {
             return;
         }
 
-        SubCommand subCommand = commands.get(args[0].toLowerCase());
+        SubCommand subCommand = subCommands.get(args[0].toLowerCase());
 
         if (subCommand != null) {
-            subCommand.execute(sender, args);
+            subCommand.execute(sender, Arrays.copyOfRange(args, 1, args.length));
 
         } else {
             sender.sendMessage(plugin.getResponsesConfiguration().getString("unknown_command"));
@@ -61,25 +64,31 @@ public class VCratesCommand implements CommandExecutor, TabCompleter {
 
     @Nullable
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        return executeTabComplete(commandSender, strings);
-    }
-
-    public List<String> executeTabComplete(CommandSender sender, String[] args) {
-
-        if (args.length == 1) {
-            return commands.keySet().stream().filter(s -> s.startsWith(args[0])).toList();
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        if (args.length == 0) {
+            return Collections.emptyList();
         }
 
-        return new ArrayList<>();
+        if (args.length == 1) {
+            return subCommands.keySet().stream()
+                    .filter(s -> s.toLowerCase().startsWith(args[0].toLowerCase()))
+                    .collect(Collectors.toList());
+        }
 
+        SubCommand subCommand = subCommands.get(args[0].toLowerCase());
+        if (subCommand != null) {
+
+            return subCommand.executeTabComplete(sender, Arrays.copyOfRange(args, 1, args.length));
+        }
+
+        return Collections.emptyList();
     }
 
     public VCrates getPlugin() {
         return plugin;
     }
 
-    public Map<String, SubCommand> getCommands() {
-        return commands;
+    public Map<String, SubCommand> getSubCommands() {
+        return subCommands;
     }
 }
