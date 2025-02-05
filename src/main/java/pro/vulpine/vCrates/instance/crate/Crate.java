@@ -1,9 +1,12 @@
 package pro.vulpine.vCrates.instance.crate;
 
+import it.vulpinefriend87.easyutils.Colorize;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import pro.vulpine.vCrates.instance.Profile;
 import pro.vulpine.vCrates.manager.CrateManager;
+import pro.vulpine.vCrates.utils.KeyUtils;
 
 import java.util.*;
 
@@ -37,25 +40,59 @@ public class Crate {
         this.cooldowns = new HashMap<>();
     }
 
-    public void open(Player player, ItemStack key) {
+    public void open(Player player) {
+
+        Profile profile = crateManager.getPlugin().getProfileManager().getProfile(player.getUniqueId());
+
+        if (profile == null) {
+
+            player.sendMessage(Colorize.color(
+                    crateManager.getPlugin().getResponsesConfiguration().getString("no_profile")
+            ));
+
+            return;
+        }
 
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("%crate%", name);
         placeholders.put("%cooldown%", String.valueOf(getRemainingCooldown(player)));
         placeholders.put("%player%", player.getName());
 
-        if (!crateKeys.isKeyAllowed(crateKeys.getKeyIdentifier(key)) && crateKeys.isRequired()) {
-            crateManager.getPlugin().getActionParser().executeActions(
-                    crateManager.getPlugin().getResponsesConfiguration().getStringList("keys.missing"),
-                    player, 0, placeholders
-            );
-            if (cratePushback.isEnabled()) {
-                cratePushback.execute(player, cratePushback.getYOffset(), cratePushback.getMultiply());
+        Boolean usedVirtualKey = null;
+
+        if (crateKeys.isRequired()) {
+
+            if (!crateKeys.isKeyAllowed(KeyUtils.getKeyIdentifier(player.getInventory().getItemInMainHand()))) {
+
+                if (!profile.hasKey(crateKeys.getAllowedKeys())) {
+
+                    crateManager.getPlugin().getActionParser().executeActions(
+                            crateManager.getPlugin().getResponsesConfiguration().getStringList("keys.missing"),
+                            player, 0, placeholders
+                    );
+
+                    if (cratePushback.isEnabled()) {
+                        cratePushback.execute(player, cratePushback.getYOffset(), cratePushback.getMultiply());
+                    }
+
+                    return;
+
+                } else {
+
+                    usedVirtualKey = true;
+
+                }
+
+            } else {
+
+                usedVirtualKey = false;
+
             }
-            return;
+
         }
 
-        if (!isCooledDown(player)) {
+        if (isCooldownActive(player)) {
+
             crateManager.getPlugin().getActionParser().executeActions(
                     crateManager.getPlugin().getResponsesConfiguration().getStringList("crates.cooldown"),
                     player, 0, placeholders
@@ -64,11 +101,15 @@ public class Crate {
             return;
         }
 
-        if (crateKeys.isRequired()) {
+        if (!usedVirtualKey) {
 
-            ItemStack itemInHand = player.getInventory().getItemInMainHand();
+            ItemStack key = player.getInventory().getItemInMainHand();
 
-            itemInHand.setAmount(itemInHand.getAmount() - 1);
+            player.getInventory().getItemInMainHand().setAmount(key.getAmount() - 1);
+
+        } else {
+
+            profile.useKey(crateKeys.getAllowedKeys());
 
         }
 
@@ -103,13 +144,13 @@ public class Crate {
         cooldowns.put(player.getUniqueId(), System.currentTimeMillis());
     }
 
-    private boolean isCooledDown(Player player) {
+    private boolean isCooldownActive(Player player) {
 
         if (cooldowns.containsKey(player.getUniqueId())) {
-            return System.currentTimeMillis() - cooldowns.get(player.getUniqueId()) > cooldown;
+            return System.currentTimeMillis() - cooldowns.get(player.getUniqueId()) <= cooldown;
         }
 
-        return true;
+        return false;
     }
 
     public CrateManager getCrateManager() {

@@ -5,7 +5,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
 import pro.vulpine.vCrates.VCrates;
 import pro.vulpine.vCrates.instance.crate.Crate;
 
@@ -31,9 +30,7 @@ public class CrateListener implements Listener {
 
                     event.setCancelled(true);
 
-                    ItemStack key = event.getPlayer().getInventory().getItemInMainHand();
-
-                    crate.open(event.getPlayer(), key);
+                    crate.open(event.getPlayer());
 
                 }
 
