@@ -51,10 +51,11 @@ public class KeyManager {
                 continue;
             }
 
+            boolean virtualAllowed = keySection.getBoolean("virtual_allowed");
             String name = keySection.getString("name");
             Material item = Material.valueOf(keySection.getString("item"));
 
-            Key key = new Key(identifier, name, item);
+            Key key = new Key(virtualAllowed, identifier, name, item);
             keys.put(identifier, key);
 
         }
