@@ -2,8 +2,10 @@ package pro.vulpine.vCrates.instance;
 
 import pro.vulpine.vCrates.manager.ProfileManager;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class Profile {
 
@@ -19,27 +21,51 @@ public class Profile {
         this.keys = keys;
     }
 
-    public void updateKey(String identifier, int amount) {
+    public CompletableFuture<Void> updateKey(String identifier, int amount) {
 
         keys.put(identifier, amount);
 
-        profileManager.getPlugin().getProfileManager().updateProfile(this);
+        return profileManager.getPlugin().getProfileManager().updateProfile(this);
 
     }
 
-    public void giveKey(String identifier, int amount) {
+    public CompletableFuture<Void> giveKey(String identifier, int amount) {
 
         keys.put(identifier, keys.getOrDefault(identifier, 0) + amount);
 
-        profileManager.getPlugin().getProfileManager().updateProfile(this);
+        return profileManager.getPlugin().getProfileManager().updateProfile(this);
 
     }
 
-    public void takeKey(String identifier, int amount) {
+    public CompletableFuture<Void> takeKey(String identifier, int amount) {
 
         keys.put(identifier, keys.getOrDefault(identifier, 0) - amount);
 
-        profileManager.getPlugin().getProfileManager().updateProfile(this);
+        return profileManager.getPlugin().getProfileManager().updateProfile(this);
+
+    }
+
+    public void useKey(String identifier) {
+
+        takeKey(identifier, 1);
+
+    }
+
+    public void useKey(List<String> identifiers) {
+
+        boolean used = false;
+
+        for (String identifier : identifiers) {
+
+            if (hasKey(identifier) && !used) {
+
+                useKey(identifier);
+
+                used = true;
+
+            }
+
+        }
 
     }
 
@@ -51,7 +77,23 @@ public class Profile {
 
     public boolean hasKey(String identifier) {
 
-        return keys.containsKey(identifier);
+        return keys.containsKey(identifier) && keys.get(identifier) > 0;
+
+    }
+
+    public boolean hasKey(List<String> identifiers) {
+
+        for (String identifier : identifiers) {
+
+            if (!hasKey(identifier)) {
+
+                return false;
+
+            }
+
+        }
+
+        return true;
 
     }
 
