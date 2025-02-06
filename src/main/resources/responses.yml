@@ -3,7 +3,7 @@
 
 # Action template:
 #
-# <required> [optional]
+#    <required> [optional]
 #
 # - "[COMMAND] <console/player>; <command without slash>"
 # - "[TITLE] <global/player>; <title>; [subtitle]; [fadeIn]; [stay]; [fadeOut]"
@@ -12,6 +12,16 @@
 # - "[SOUND] <global/player>; <sound>; [volume]; [pitch]"
 # - "[DELAY] <milliseconds>"
 #
+
+help:
+    - ""
+    - "&7[&3v&bCrates&7] &7Commands:"
+    - ""
+    - "     &c<&7required&c> &8[&7optional&8]"
+    - ""
+    - "&7 - &3/vcrates help &7- Show this message."
+    - "&7 - &3/vcrates key &8[&bhelp&8] &7- Show key commands."
+    - ""
 
 crates:
   cooldown: # List of actions (see Action template above)
@@ -22,4 +32,52 @@ keys:
     - "[TITLE] player; &c&lERROR!; &7You don't have the required key."
     - "[SOUND] player; ENTITY_VILLAGER_NO"
 
-unknown_command: "&7[&3v&bCrates&7] &cUnknown command. &7Use &b/vcrates help &7to see the available commands." # Message
+  help:
+    - ""
+    - "&7[&3v&bCrates&7] &7Commands [&bKEYS&7]:"
+    - ""
+    - "     &c<&7required&c> &8[&7optional&8]"
+    - ""
+    - "&7 - &3/vcrates key help &8[&bhelp&8] &7- Show this message."
+    - "&7 - &3/vcrates key give &c<&bplayer&c> &c<&bidentifier&c> &c<&btype&c> &8[&bamount&8]
+      &7- Give key(s) to a player."
+    - "&7 - &3/vcrates key take &c<&bplayer&c> &c<&bidentifier&c> &c<&btype&c> &8[&bamount&8]
+      &7- Take key(s) from a player."
+    - ""
+
+  received:
+    physical:
+      - "[TITLE] player; &a&lKEYS RECEIVED!; &7You received &3x%amount% &b%identifier% &7key(s)!"
+      - "[SOUND] player; ENTITY_VILLAGER_YES"
+      - "[SOUND] player; ENTITY_ITEM_PICKUP"
+    virtual:
+      - "[TITLE] player; &a&lKEYS RECEIVED!; &7You received &3x%amount% &b%identifier% &7virtual key(s)!"
+      - "[SOUND] player; ENTITY_VILLAGER_YES"
+
+  taken:
+    physical:
+      - "[TITLE] player; &c&lKEYS TAKEN!; &7&3x%amount% &b%identifier% &7key(s) have been taken from you!"
+      - "[SOUND] player; ENTITY_VILLAGER_NO"
+      - "[SOUND] player; ENTITY_ITEM_DROP"
+    virtual:
+      - "[TITLE] player; &c&lKEYS TAKEN!; &7&3x%amount% &b%identifier% &7virtual key(s) have been taken from you!"
+      - "[SOUND] player; ENTITY_VILLAGER_NO"
+
+  give: "&7[&3v&bCrates&7] &7Gave &3x%amount% &b%identifier% &7%type% key(s) to &b%player%&7."
+  take: "&7[&3v&bCrates&7] &7Took &3x%amount% &b%identifier% &7%type% key(s) from &b%player%&7."
+  invalid_identifier: "&7[&3v&bCrates&7] &cInvalid key."
+  invalid_type: "&7[&3v&bCrates&7] &cInvalid key type."
+  virtual_not_allowed: "&7[&3v&bCrates&7] &cVirtual keys are not allowed for this key."
+  offline: "&7[&3v&bCrates&7] &cPlayer is offline."
+  no_keys_found: "&7[&3v&bCrates&7] &cThe player doesn't have any keys of this type."
+  not_enough_space: "&7[&3v&bCrates&7] &cThe player's inventory does not have enough space."
+
+  balance:
+    header: "&7[&3v&bCrates&7] &7Virtual keys balance:"
+    entry: "&7 - &b%identifier% &7(&3x%amount%&7)"
+
+unknown_command: "&7[&3v&bCrates&7] &cUnknown command. &7Use &b/vcrates help &7to see the available commands."
+wrong_arguments: "&7[&3v&bCrates&7] &cWrong arguments. &7Use &b/vcrates help &7to see the available commands."
+no_profile: "&7[&3v&bCrates&7] &cYour profile wasn't loaded. Try leaving the server and joining again or contact a server administrator."
+player_not_found: "&7[&3v&bCrates&7] &cPlayer not found."
+invalid_amount: "&7[&3v&bCrates&7] &cInvalid amount."
