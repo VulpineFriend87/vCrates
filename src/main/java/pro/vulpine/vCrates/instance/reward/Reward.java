@@ -1,4 +1,4 @@
-package pro.vulpine.vCrates.instance.crate;
+package pro.vulpine.vCrates.instance.reward;
 
 import org.bukkit.Material;
 

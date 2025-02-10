@@ -6,6 +6,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import pro.vulpine.vCrates.VCrates;
 import pro.vulpine.vCrates.configuration.CratesConfiguration;
 import pro.vulpine.vCrates.instance.crate.*;
+import pro.vulpine.vCrates.instance.reward.Reward;
+import pro.vulpine.vCrates.instance.reward.RewardItem;
 import pro.vulpine.vCrates.utils.logger.Logger;
 
 import java.util.*;
