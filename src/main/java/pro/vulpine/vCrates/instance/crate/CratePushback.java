@@ -17,7 +17,7 @@ public class CratePushback {
         this.multiply = multiply;
     }
 
-    public void execute(Player player, double yOffset, double multiply) {
+    public void execute(Player player) {
 
         Vector direction = player.getEyeLocation().getDirection();
         direction.setY(yOffset);
