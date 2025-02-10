@@ -40,6 +40,7 @@
 #                 - "&7This is an example reward"
 #               type: DIAMOND_BLOCK # Item type
 #               amount: 1 # Item amount
+#           actions: [] # List of actions that will be executed when the player wins this reward (see Action template below)
 #   rewards: # List of rewards
 #     example: # Reward identifier
 #       name: "&9&lEXAMPLE REWARD" # Display name of the reward (used in placeholders)
