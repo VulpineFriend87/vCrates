@@ -26,15 +26,20 @@
 #       - "&9&lEXAMPLE CRATE"
 #       - "&7Left click to preview"
 #       - "&7Right click to open"
-#   milestone: # Gives the player a reward if they open the crate a certain amount of times
-#     repeats: false # Does the milestone repeat?
-#     list: # List of milestones
-#       - after: 5 # After this many rewards
-#         rewards:
-#           - example # Reward identifier (specified in the crate rewards)
-#       - after: 10 # After this many rewards
-#         rewards:
-#           - example # Reward identifier (specified in the crate rewards)
+#   milestones: # Gives the player a reward if they open the crate a certain amount of times
+#     - after: 5 # After this many times the player opens the crate
+#       repeats:
+#        enabled: true # Is repeats enabled?
+#        amount: 1 # Amount of repeats (-1 = infinite)
+#       rewards:
+#         - name: "&9&lEXAMPLE REWARD" # Display name of the reward (used in placeholders)
+#           display_item: DIAMOND_BLOCK # Display item of the reward
+#           items: # List of items that will be given to the player when they win this reward
+#             - name: "&9&lEXAMPLE ITEM" # Display name of the item
+#               lore: # Lore of the item
+#                 - "&7This is an example reward"
+#               type: DIAMOND_BLOCK # Item type
+#               amount: 1 # Item amount
 #   rewards: # List of rewards
 #     example: # Reward identifier
 #       name: "&9&lEXAMPLE REWARD" # Display name of the reward (used in placeholders)
