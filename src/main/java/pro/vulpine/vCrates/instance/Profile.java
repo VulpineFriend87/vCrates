@@ -13,12 +13,14 @@ public class Profile {
 
     private final UUID owner;
     private final Map<String, Integer> keys;
+    private final List<StatisticEntry> statistics;
 
-    public Profile(ProfileManager profileManager, UUID owner, Map<String, Integer> keys) {
+    public Profile(ProfileManager profileManager, UUID owner, Map<String, Integer> keys, List<StatisticEntry> statistics) {
         this.profileManager = profileManager;
 
         this.owner = owner;
         this.keys = keys;
+        this.statistics = statistics;
     }
 
     public CompletableFuture<Void> updateKey(String identifier, int amount) {
@@ -97,6 +99,93 @@ public class Profile {
 
     }
 
+    public void setStatistic(String type, String identifier, int value) {
+
+        for (StatisticEntry entry : statistics) {
+
+            if (entry.getType().equals(type) && entry.getIdentifier().equals(identifier)) {
+
+                entry.setValue(value);
+                return;
+
+            }
+
+        }
+
+        statistics.add(new StatisticEntry(type, identifier, value));
+
+    }
+
+    public void incrementStatistic(StatisticEntry entry) {
+
+        entry.setValue(entry.getValue() + 1);
+
+        profileManager.getPlugin().getProfileManager().updateProfile(this);
+
+    }
+
+    public void incrementStatistic(String type, String identifier) {
+
+        for (StatisticEntry entry : statistics) {
+
+            if (entry.getType().equals(type) && entry.getIdentifier().equals(identifier)) {
+
+                entry.setValue(entry.getValue() + 1);
+                return;
+
+            }
+
+        }
+
+        statistics.add(new StatisticEntry(type, identifier, 1));
+
+        profileManager.getPlugin().getProfileManager().updateProfile(this);
+
+    }
+
+    public void decrementStatistic(StatisticEntry entry) {
+
+        entry.setValue(entry.getValue() - 1);
+
+        profileManager.getPlugin().getProfileManager().updateProfile(this);
+
+    }
+
+    public void decrementStatistic(String type, String identifier) {
+
+        for (StatisticEntry entry : statistics) {
+
+            if (entry.getType().equals(type) && entry.getIdentifier().equals(identifier)) {
+
+                entry.setValue(entry.getValue() - 1);
+                return;
+
+            }
+
+        }
+
+        statistics.add(new StatisticEntry(type, identifier, -1));
+
+        profileManager.getPlugin().getProfileManager().updateProfile(this);
+
+    }
+
+    public Integer getStatistic(String type, String identifier) {
+
+        for (StatisticEntry entry : statistics) {
+
+            if (entry.getType().equals(type) && entry.getIdentifier().equals(identifier)) {
+
+                return entry.getValue();
+
+            }
+
+        }
+
+        return null;
+
+    }
+
     public ProfileManager getProfileManager() {
         return profileManager;
     }
@@ -107,5 +196,9 @@ public class Profile {
 
     public Map<String, Integer> getKeys() {
         return keys;
+    }
+
+    public List<StatisticEntry> getStatistics() {
+        return statistics;
     }
 }

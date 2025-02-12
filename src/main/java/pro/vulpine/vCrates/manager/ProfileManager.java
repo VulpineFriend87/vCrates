@@ -2,6 +2,7 @@ package pro.vulpine.vCrates.manager;
 
 import pro.vulpine.vCrates.VCrates;
 import pro.vulpine.vCrates.instance.Profile;
+import pro.vulpine.vCrates.instance.StatisticEntry;
 import pro.vulpine.vCrates.utils.logger.Logger;
 
 import java.sql.SQLException;
@@ -36,8 +37,17 @@ public class ProfileManager {
                 " PRIMARY KEY (owner, key_type)" +
                 ")";
 
+        String createStatisticsTable = "CREATE TABLE IF NOT EXISTS `statistics` (" +
+                " owner VARCHAR(36) NOT NULL," +
+                " type VARCHAR(255) NOT NULL," +
+                " identifier VARCHAR(255) NOT NULL," +
+                " value INT NOT NULL," +
+                " PRIMARY KEY (owner, type, identifier)" +
+                ")";
+
         plugin.getStorageManager().executeUpdate(createProfileTables);
         plugin.getStorageManager().executeUpdate(createKeysTable);
+        plugin.getStorageManager().executeUpdate(createStatisticsTable);
 
     }
 
@@ -69,9 +79,12 @@ public class ProfileManager {
 
                    if (rs.next()) {
 
-                       Profile profile = new Profile(this, owner, new HashMap<>());
+                       Profile profile = new Profile(this, owner, new HashMap<>(), new ArrayList<>());
 
-                       loadKeysForProfile(owner, profile).thenRun(() -> {
+                       CompletableFuture<Void> keysFuture = loadKeysForProfile(owner, profile);
+                       CompletableFuture<Void> statisticsFuture = loadStatisticsForProfile(owner, profile);
+
+                       CompletableFuture.allOf(keysFuture, statisticsFuture).thenRun(() -> {
 
                            profiles.add(profile);
 
@@ -181,6 +194,54 @@ public class ProfileManager {
 
     }
 
+    public CompletableFuture<Void> loadStatisticsForProfile(UUID owner, Profile profile) {
+
+        String query = "SELECT type, identifier, value FROM `statistics` WHERE owner = ?";
+
+        return plugin.getStorageManager().executeQuery(query, owner.toString()).thenCompose(rs -> {
+
+            try {
+
+                if (rs != null) {
+
+                    while (rs.next()) {
+
+                        String type = rs.getString("type");
+                        String identifier = rs.getString("identifier");
+                        int value = rs.getInt("value");
+
+                        profile.getStatistics().add(new StatisticEntry(type, identifier, value));
+
+                    }
+
+                }
+
+                return CompletableFuture.completedFuture(null);
+
+            } catch (SQLException e) {
+
+                Logger.error("Error while loading statistics for " + owner + ": " + e.getMessage(), "ProfileManager");
+
+                return CompletableFuture.failedFuture(e);
+
+            } finally {
+
+                try {
+
+                    plugin.getStorageManager().closeResources(rs, rs.getStatement(), rs.getStatement().getConnection());
+
+                } catch (SQLException e) {
+
+                    Logger.error("Error while closing resources for " + owner + ": " + e.getMessage(), "ProfileManager");
+
+                }
+
+            }
+
+        });
+
+    }
+
     public void unloadProfile(UUID owner) {
 
         Logger.info("Unloading profile for " + owner, "ProfileManager");
@@ -221,24 +282,30 @@ public class ProfileManager {
 
         Logger.info("Updating profile for " + profile.getOwner(), "ProfileManager");
 
-        String query = "INSERT INTO `keys` (owner, key_type, key_count) VALUES (?, ?, ?)" +
-                " ON DUPLICATE KEY UPDATE key_count = VALUES(key_count)";
+        String keysQuery = "INSERT INTO `keys` (owner, key_type, key_count) VALUES (?, ?, ?) " +
+                "ON DUPLICATE KEY UPDATE key_count = VALUES(key_count)";
+
+        String statsQuery = "INSERT INTO `statistics` (owner, type, identifier, value) VALUES (?, ?, ?, ?) " +
+                "ON DUPLICATE KEY UPDATE value = VALUES(value)";
 
         List<CompletableFuture<Integer>> futures = new ArrayList<>();
 
         for (Map.Entry<String, Integer> entry : profile.getKeys().entrySet()) {
-
             CompletableFuture<Integer> updateFuture =
-                    plugin.getStorageManager().executeUpdate(query, profile.getOwner().toString(), entry.getKey(), entry.getValue());
-
+                    plugin.getStorageManager().executeUpdate(keysQuery, profile.getOwner().toString(), entry.getKey(), entry.getValue());
             futures.add(updateFuture);
+        }
 
+        for (StatisticEntry stat : profile.getStatistics()) {
+            CompletableFuture<Integer> updateFuture =
+                    plugin.getStorageManager().executeUpdate(statsQuery, profile.getOwner().toString(), stat.getType(), stat.getIdentifier(), stat.getValue());
+            futures.add(updateFuture);
         }
 
         return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
                 .thenRun(() -> Logger.info("Updated profile for " + profile.getOwner(), "ProfileManager"));
-
     }
+
 
     public Profile getProfile(UUID owner) {
 
