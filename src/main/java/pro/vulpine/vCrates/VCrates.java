@@ -1,5 +1,6 @@
 package pro.vulpine.vCrates;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import pro.vulpine.vCrates.command.VCratesCommand;
 import pro.vulpine.vCrates.configuration.CratesConfiguration;
@@ -9,10 +10,7 @@ import pro.vulpine.vCrates.configuration.ResponsesConfiguration;
 import pro.vulpine.vCrates.instance.StorageMethod;
 import pro.vulpine.vCrates.listener.CrateListener;
 import pro.vulpine.vCrates.listener.PlayerListener;
-import pro.vulpine.vCrates.manager.CrateManager;
-import pro.vulpine.vCrates.manager.KeyManager;
-import pro.vulpine.vCrates.manager.ProfileManager;
-import pro.vulpine.vCrates.manager.StorageManager;
+import pro.vulpine.vCrates.manager.*;
 import pro.vulpine.vCrates.utils.logger.Level;
 import pro.vulpine.vCrates.utils.logger.Logger;
 import pro.vulpine.vCrates.utils.ActionParser;
@@ -82,6 +80,12 @@ public final class VCrates extends JavaPlugin {
                 mainConfiguration.getString("storage.password", ""));
 
         profileManager = new ProfileManager(this);
+
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+
+            new PlaceholderManager(this).register();
+
+        }
 
         getCommand("vcrates").setExecutor(new VCratesCommand(this));
 
