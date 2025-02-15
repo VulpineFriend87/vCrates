@@ -131,6 +131,8 @@ public class Profile {
             if (entry.getType().equals(type) && entry.getIdentifier().equals(identifier)) {
 
                 entry.setValue(entry.getValue() + 1);
+
+                profileManager.getPlugin().getProfileManager().updateProfile(this);
                 return;
 
             }
