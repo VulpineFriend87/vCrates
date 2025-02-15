@@ -6,6 +6,9 @@ import org.bukkit.configuration.ConfigurationSection;
 import pro.vulpine.vCrates.VCrates;
 import pro.vulpine.vCrates.configuration.CratesConfiguration;
 import pro.vulpine.vCrates.instance.crate.*;
+import pro.vulpine.vCrates.instance.milestone.Milestone;
+import pro.vulpine.vCrates.instance.milestone.MilestoneRepeats;
+import pro.vulpine.vCrates.instance.milestone.MilestoneReward;
 import pro.vulpine.vCrates.instance.reward.Reward;
 import pro.vulpine.vCrates.instance.reward.RewardItem;
 import pro.vulpine.vCrates.utils.logger.Logger;
@@ -104,7 +107,11 @@ public class CrateManager {
                     }
 
                     String rewardName = rewardSection.getString("name");
-                    Material displayItem = Material.getMaterial(rewardSection.getString("displayItem", "STONE").toUpperCase());
+                    Material displayItem = Material.getMaterial(rewardSection.getString("display_item").toUpperCase());
+                    if (displayItem == null) {
+                        Logger.warn("Display item " + rewardSection.getString("display_item") + " is not a valid material, skipping.", "CrateManager");
+                        displayItem = Material.STONE;
+                    }
 
                     List<RewardItem> rewardItems = new ArrayList<>();
                     List<Map<?, ?>> itemsList = rewardSection.getMapList("items");
@@ -134,7 +141,67 @@ public class CrateManager {
 
             }
 
-            Crate crate = new Crate(this, crateCrateKeys, crateCratePushback, crateCrateHologram, identifier, name, cooldown, blocks, rewards);
+            List<Milestone> milestones = new ArrayList<>();
+
+            List<Map<?, ?>> milestonesList = crateSection.getMapList("milestones");
+
+            if (!milestonesList.isEmpty()) {
+
+                for (Map<?, ?> milestoneData : milestonesList) {
+
+                    int after = (int) milestoneData.get("after");
+                    List<String> actions = (List<String>) milestoneData.get("actions");
+
+                    MilestoneRepeats repeats = new MilestoneRepeats(
+                            (boolean) ((Map<?, ?>) milestoneData.get("repeats")).get("enabled"),
+                            (int) ((Map<?, ?>) milestoneData.get("repeats")).get("times")
+                    );
+
+                    List<MilestoneReward> milestoneRewards = new ArrayList<>();
+
+                    for (Map<?, ?> rewardData : (List<Map<?, ?>>) milestoneData.get("rewards")) {
+
+                        String rewardName = (String) rewardData.get("name");
+                        Material displayItem = Material.getMaterial(rewardData.get("display_item").toString().toUpperCase());
+                        if (displayItem == null) {
+                            Logger.warn("Display item " + rewardData.get("display_item") + " is not a valid material, skipping.", "CrateManager");
+                            displayItem = Material.STONE;
+                        }
+
+                        List<RewardItem> rewardItems = new ArrayList<>();
+
+                        for (Map<?, ?> itemData : (List<Map<?, ?>>) rewardData.get("items")) {
+
+                            String itemName = (String) itemData.get("name");
+                            List<String> itemLore = (List<String>) itemData.get("lore");
+                            Material itemType = Material.getMaterial(itemData.get("type").toString().toUpperCase());
+                            if (itemType == null) {
+                                Logger.warn("Item type " + itemData.get("type") + " is not a valid material, skipping.", "CrateManager");
+                                itemType = Material.STONE;
+                            }
+                            int amount = (int) itemData.get("amount");
+
+                            rewardItems.add(new RewardItem(itemName, itemLore, itemType, amount));
+
+                        }
+
+                        milestoneRewards.add(new MilestoneReward(rewardName, displayItem, rewardItems));
+
+                    }
+
+                    milestones.add(new Milestone(after, actions, repeats, milestoneRewards));
+
+                }
+            }
+
+            Crate crate = new Crate(this, crateCrateKeys, crateCratePushback, crateCrateHologram, identifier, name, cooldown, blocks, milestones, rewards);
+
+            for (Milestone milestone : milestones) {
+
+                milestone.setCrate(crate);
+
+            }
+
             crates.put(identifier, crate);
 
         }

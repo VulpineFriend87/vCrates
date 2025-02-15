@@ -5,6 +5,9 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import pro.vulpine.vCrates.instance.Profile;
+import pro.vulpine.vCrates.instance.milestone.Milestone;
+import pro.vulpine.vCrates.instance.reward.Reward;
+import pro.vulpine.vCrates.instance.reward.RewardItem;
 import pro.vulpine.vCrates.manager.CrateManager;
 import pro.vulpine.vCrates.utils.KeyUtils;
 
@@ -22,10 +25,11 @@ public class Crate {
     private final String name;
     private final int cooldown;
     private final List<Location> blocks;
+    private final List<Milestone> milestones;
     private final List<Reward> rewards;
     private final Map<UUID, Long> cooldowns;
 
-    public Crate(CrateManager crateManager, CrateKeys crateKeys, CratePushback cratePushback, CrateHologram crateHologram, String identifier, String name, int cooldown, List<Location> blocks, List<Reward> rewards) {
+    public Crate(CrateManager crateManager, CrateKeys crateKeys, CratePushback cratePushback, CrateHologram crateHologram, String identifier, String name, int cooldown, List<Location> blocks, List<Milestone> milestones, List<Reward> rewards) {
         this.crateManager = crateManager;
 
         this.crateKeys = crateKeys;
@@ -36,6 +40,7 @@ public class Crate {
         this.name = name;
         this.cooldown = cooldown;
         this.blocks = blocks;
+        this.milestones = milestones;
         this.rewards = rewards;
         this.cooldowns = new HashMap<>();
     }
@@ -55,8 +60,9 @@ public class Crate {
 
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("%crate%", name);
-        placeholders.put("%cooldown%", String.valueOf(getRemainingCooldown(player)));
         placeholders.put("%player%", player.getName());
+        placeholders.put("%times_opened%", String.valueOf(crateManager.getPlugin().getProfileManager()
+                .getProfile(player.getUniqueId()).getStatistic("crates-opened", identifier)));
 
         Boolean usedVirtualKey = null;
 
@@ -72,7 +78,7 @@ public class Crate {
                     );
 
                     if (cratePushback.isEnabled()) {
-                        cratePushback.execute(player, cratePushback.getYOffset(), cratePushback.getMultiply());
+                        cratePushback.execute(player);
                     }
 
                     return;
@@ -90,6 +96,8 @@ public class Crate {
             }
 
         }
+
+        placeholders.put("%cooldown%", String.valueOf(getRemainingCooldown(player)));
 
         if (isCooldownActive(player)) {
 
@@ -115,11 +123,46 @@ public class Crate {
 
         Reward reward = rewards.get((int) (Math.random() * rewards.size()));
 
+        placeholders.put("%reward%", reward.getName());
+
         for (RewardItem item : reward.getItems()) {
             player.getInventory().addItem(RewardItem.toItemStack(item));
         }
 
+        profile.incrementStatistic("crates-opened", identifier);
+
         crateManager.getPlugin().getActionParser().executeActions(reward.getActions(), player, 0, placeholders);
+
+        for (Milestone milestone : milestones) {
+
+            int cratesOpened = profile.getStatistic("crates-opened", identifier);
+            int after = milestone.getAfter();
+
+            if (cratesOpened < after) {
+                continue;
+            }
+
+            int rewardIndex = cratesOpened / after;
+
+            if (milestone.getRepeats().isEnabled()) {
+
+                if (cratesOpened % after == 0 && rewardIndex <= milestone.getRepeats().getTimes()) {
+
+                    milestone.giveRewards(player);
+
+                }
+
+            } else {
+
+                if (cratesOpened % after == 0) {
+
+                    milestone.giveRewards(player);
+
+                }
+
+            }
+
+        }
 
         if (cooldown > 0) {
             setCooldown(player);
@@ -183,6 +226,10 @@ public class Crate {
 
     public List<Location> getBlocks() {
         return blocks;
+    }
+
+    public List<Milestone> getMilestones() {
+        return milestones;
     }
 
     public List<Reward> getRewards() {
