@@ -28,9 +28,10 @@
 #       - "&7Right click to open"
 #   milestones: # Gives the player a reward if they open the crate a certain amount of times
 #     - after: 5 # After this many times the player opens the crate
+#       actions: [] # List of actions that will be executed when the player wins this reward (see Action template below)
 #       repeats:
 #        enabled: true # Is repeats enabled?
-#        amount: 1 # Amount of repeats (-1 = infinite)
+#        times: 1 # Amount of repeats (-1 = infinite)
 #       rewards:
 #         - name: "&9&lEXAMPLE REWARD" # Display name of the reward (used in placeholders)
 #           display_item: DIAMOND_BLOCK # Display item of the reward
@@ -40,7 +41,6 @@
 #                 - "&7This is an example reward"
 #               type: DIAMOND_BLOCK # Item type
 #               amount: 1 # Item amount
-#           actions: [] # List of actions that will be executed when the player wins this reward (see Action template below)
 #   rewards: # List of rewards
 #     example: # Reward identifier
 #       name: "&9&lEXAMPLE REWARD" # Display name of the reward (used in placeholders)
