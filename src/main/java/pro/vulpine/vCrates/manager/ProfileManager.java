@@ -41,7 +41,7 @@ public class ProfileManager {
                 " owner VARCHAR(36) NOT NULL," +
                 " type VARCHAR(255) NOT NULL," +
                 " identifier VARCHAR(255) NOT NULL," +
-                " value INT NOT NULL," +
+                " stat_value INT NOT NULL," +
                 " PRIMARY KEY (owner, type, identifier)" +
                 ")";
 
@@ -94,7 +94,7 @@ public class ProfileManager {
 
                        }).exceptionally(ex -> {
 
-                           Logger.error("Error while loading keys for " + owner + ": " + ex.getMessage(), "ProfileManager");
+                           Logger.error("Error while loading profile for " + owner + ": " + ex.getMessage(), "ProfileManager");
 
                            future.completeExceptionally(ex);
                            return null;
@@ -196,7 +196,7 @@ public class ProfileManager {
 
     public CompletableFuture<Void> loadStatisticsForProfile(UUID owner, Profile profile) {
 
-        String query = "SELECT type, identifier, value FROM `statistics` WHERE owner = ?";
+        String query = "SELECT type, identifier, stat_value FROM `statistics` WHERE owner = ?";
 
         return plugin.getStorageManager().executeQuery(query, owner.toString()).thenCompose(rs -> {
 
@@ -208,7 +208,7 @@ public class ProfileManager {
 
                         String type = rs.getString("type");
                         String identifier = rs.getString("identifier");
-                        int value = rs.getInt("value");
+                        int value = rs.getInt("stat_value");
 
                         profile.getStatistics().add(new StatisticEntry(type, identifier, value));
 
@@ -285,8 +285,8 @@ public class ProfileManager {
         String keysQuery = "INSERT INTO `keys` (owner, key_type, key_count) VALUES (?, ?, ?) " +
                 "ON DUPLICATE KEY UPDATE key_count = VALUES(key_count)";
 
-        String statsQuery = "INSERT INTO `statistics` (owner, type, identifier, value) VALUES (?, ?, ?, ?) " +
-                "ON DUPLICATE KEY UPDATE value = VALUES(value)";
+        String statsQuery = "INSERT INTO `statistics` (owner, type, identifier, stat_value) VALUES (?, ?, ?, ?) " +
+                "ON DUPLICATE KEY UPDATE stat_value = VALUES(stat_value)";
 
         List<CompletableFuture<Integer>> futures = new ArrayList<>();
 

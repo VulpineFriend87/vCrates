@@ -47,7 +47,7 @@ public class StorageManager {
         if (method == StorageMethod.H2) {
 
             String databasePath = plugin.getDataFolder().getAbsolutePath();
-            config.setJdbcUrl("jdbc:h2:" + databasePath + "/database;MODE=MYSQL;AUTO_RECONNECT=TRUE");
+            config.setJdbcUrl("jdbc:h2:file:" + databasePath + "/database;MODE=MYSQL;AUTO_RECONNECT=TRUE");
             config.setDriverClassName("org.h2.Driver");
             config.setUsername("sa");
             config.setPassword("");
