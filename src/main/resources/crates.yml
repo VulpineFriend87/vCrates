@@ -16,9 +16,10 @@
 #     multiply: -1.25 # Multiply the pushback by this amount
 #   effect: # Displays an effect when the crate is opened
 #     enabled: true # Is effect enabled?
-#     type: AURA # Type of effect (todo add list and implement)
-#     color: RED # Color of the effect
-#     particle: ELECTRIC_SPARK # Particle of the effect
+#     type: HELIX # Available types: HELIX, SPIRAL, VORTEX
+#     particle: CRIT # Particle of the effect
+#     radius: 1 # Radius of the effect
+#     speed: 1 # Speed of the effect in seconds
 #   hologram: # Displays a hologram when the crate is opened
 #     enabled: true # Is hologram enabled?
 #     y_offset: 0 # Y offset of the hologram
