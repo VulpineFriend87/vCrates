@@ -2,6 +2,7 @@ package pro.vulpine.vCrates.manager;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.configuration.ConfigurationSection;
 import pro.vulpine.vCrates.VCrates;
 import pro.vulpine.vCrates.configuration.CratesConfiguration;
@@ -86,6 +87,13 @@ public class CrateManager {
                     Logger.warn("Block " + loc + " is not a valid location, skipping.", "CrateManager");
                 }
             }
+
+            boolean effectEnabled = crateSection.getBoolean("effect.enabled", false);
+            String effectType = crateSection.getString("effect.type", "HELIX");
+            Particle effectParticle = Particle.valueOf(crateSection.getString("effect.particle", "ELECTRIC_SPARK"));
+            double effectRadius = crateSection.getDouble("effect.radius", 1);
+            double effectSpeed = crateSection.getDouble("effect.speed", 1);
+            CrateEffect crateCrateEffect = new CrateEffect(effectEnabled, effectType, effectParticle, effectRadius, effectSpeed);
 
             boolean hologramEnabled = crateSection.getBoolean("hologram.enabled", true);
             List<String> hologramLines = crateSection.getStringList("hologram.lines");
@@ -194,7 +202,9 @@ public class CrateManager {
                 }
             }
 
-            Crate crate = new Crate(this, crateCrateKeys, crateCratePushback, crateCrateHologram, identifier, name, cooldown, blocks, milestones, rewards);
+            Crate crate = new Crate(this, crateCrateKeys, crateCratePushback, crateCrateEffect, crateCrateHologram, identifier, name, cooldown, blocks, milestones, rewards);
+
+            crate.getCrateEffect().setCrate(crate);
 
             for (Milestone milestone : milestones) {
 
@@ -214,6 +224,7 @@ public class CrateManager {
 
         for (Crate crate : crates.values()) {
             crate.getCrateHologram().remove();
+            crate.getCrateEffect().cancel();
         }
 
         crates.clear();

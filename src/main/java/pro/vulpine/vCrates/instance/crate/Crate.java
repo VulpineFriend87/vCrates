@@ -19,6 +19,7 @@ public class Crate {
 
     private final CrateKeys crateKeys;
     private final CratePushback cratePushback;
+    private final CrateEffect crateEffect;
     private final CrateHologram crateHologram;
 
     private final String identifier;
@@ -29,11 +30,12 @@ public class Crate {
     private final List<Reward> rewards;
     private final Map<UUID, Long> cooldowns;
 
-    public Crate(CrateManager crateManager, CrateKeys crateKeys, CratePushback cratePushback, CrateHologram crateHologram, String identifier, String name, int cooldown, List<Location> blocks, List<Milestone> milestones, List<Reward> rewards) {
+    public Crate(CrateManager crateManager, CrateKeys crateKeys, CratePushback cratePushback, CrateEffect crateEffect, CrateHologram crateHologram, String identifier, String name, int cooldown, List<Location> blocks, List<Milestone> milestones, List<Reward> rewards) {
         this.crateManager = crateManager;
 
         this.crateKeys = crateKeys;
         this.cratePushback = cratePushback;
+        this.crateEffect = crateEffect;
         this.crateHologram = crateHologram;
 
         this.identifier = identifier;
@@ -206,6 +208,10 @@ public class Crate {
 
     public CratePushback getCratePushback() {
         return cratePushback;
+    }
+
+    public CrateEffect getCrateEffect() {
+        return crateEffect;
     }
 
     public CrateHologram getCrateHologram() {
