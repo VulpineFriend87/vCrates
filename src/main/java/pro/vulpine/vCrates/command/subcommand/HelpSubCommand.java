@@ -1,4 +1,4 @@
-package pro.vulpine.vCrates.command.subcommands;
+package pro.vulpine.vCrates.command.subcommand;
 
 import it.vulpinefriend87.easyutils.Colorize;
 import org.bukkit.command.CommandSender;

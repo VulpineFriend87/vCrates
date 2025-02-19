@@ -8,9 +8,9 @@ import org.bukkit.command.TabCompleter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.vulpine.vCrates.VCrates;
-import pro.vulpine.vCrates.command.subcommands.HelpSubCommand;
-import pro.vulpine.vCrates.command.subcommands.KeySubCommand;
-import pro.vulpine.vCrates.command.subcommands.ReloadSubCommand;
+import pro.vulpine.vCrates.command.subcommand.HelpSubCommand;
+import pro.vulpine.vCrates.command.subcommand.KeySubCommand;
+import pro.vulpine.vCrates.command.subcommand.ReloadSubCommand;
 import pro.vulpine.vCrates.instance.SubCommand;
 
 import java.util.*;
