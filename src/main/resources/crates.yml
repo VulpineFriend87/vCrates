@@ -16,7 +16,7 @@
 #     multiply: -1.25 # Multiply the pushback by this amount
 #   effect: # Displays an effect when the crate is opened
 #     enabled: true # Is effect enabled?
-#     type: HELIX # Available types: HELIX, SPIRAL, VORTEX
+#     type: HELIX # Available types: HELIX, SPIRAL, VORTEX, WAVE, RING, AURA, CIRCLE, SQUARE
 #     particle: CRIT # Particle of the effect
 #     radius: 1 # Radius of the effect
 #     speed: 1 # Speed of the effect in seconds
