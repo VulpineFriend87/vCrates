@@ -47,24 +47,24 @@ keys:
 
   received:
     physical:
-      - "[TITLE] player; &a&lKEYS RECEIVED!; &7You received &3x%amount% &b%identifier% &7key(s)!"
+      - "[TITLE] player; &a&lKEYS RECEIVED!; &7You received &3x%amount% &f%key% &7key(s)!"
       - "[SOUND] player; ENTITY_VILLAGER_YES"
       - "[SOUND] player; ENTITY_ITEM_PICKUP"
     virtual:
-      - "[TITLE] player; &a&lKEYS RECEIVED!; &7You received &3x%amount% &b%identifier% &7virtual key(s)!"
+      - "[TITLE] player; &a&lKEYS RECEIVED!; &7You received &3x%amount% &f%key% &7virtual key(s)!"
       - "[SOUND] player; ENTITY_VILLAGER_YES"
 
   taken:
     physical:
-      - "[TITLE] player; &c&lKEYS TAKEN!; &7&3x%amount% &b%identifier% &7key(s) have been taken from you!"
+      - "[TITLE] player; &c&lKEYS TAKEN!; &7&3x%amount% &f%key% &7(%identifier%) &7key(s) have been taken from you!"
       - "[SOUND] player; ENTITY_VILLAGER_NO"
       - "[SOUND] player; ENTITY_ITEM_DROP"
     virtual:
-      - "[TITLE] player; &c&lKEYS TAKEN!; &7&3x%amount% &b%identifier% &7virtual key(s) have been taken from you!"
+      - "[TITLE] player; &c&lKEYS TAKEN!; &7&3x%amount% &f%key% &7(%identifier%) &7virtual key(s) have been taken from you!"
       - "[SOUND] player; ENTITY_VILLAGER_NO"
 
-  give: "&7[&3v&bCrates&7] &7Gave &3x%amount% &b%identifier% &7%type% key(s) to &b%player%&7."
-  take: "&7[&3v&bCrates&7] &7Took &3x%amount% &b%identifier% &7%type% key(s) from &b%player%&7."
+  give: "&7[&3v&bCrates&7] &7Gave &3x%amount% &b%key% &7(%identifier%) &7%type% key(s) to &b%player%&7."
+  take: "&7[&3v&bCrates&7] &7Took &3x%amount% &b%key% &7(%identifier%) &7%type% key(s) from &b%player%&7."
   invalid_identifier: "&7[&3v&bCrates&7] &cInvalid key."
   invalid_type: "&7[&3v&bCrates&7] &cInvalid key type."
   virtual_not_allowed: "&7[&3v&bCrates&7] &cVirtual keys are not allowed for this key."
@@ -74,7 +74,7 @@ keys:
 
   balance:
     header: "&7[&3v&bCrates&7] &7Virtual keys balance:"
-    entry: "&7 - &b%identifier% &7(&3x%amount%&7)"
+    entry: "&7 - &b%key% &7(&3x%amount%&7)"
 
 unknown_command: "&7[&3v&bCrates&7] &cUnknown command. &7Use &b/vcrates help &7to see the available commands."
 wrong_arguments: "&7[&3v&bCrates&7] &cWrong arguments. &7Use &b/vcrates help &7to see the available commands."

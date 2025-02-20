@@ -134,6 +134,13 @@ public class KeySubCommand implements SubCommand {
 
             String successResponseKey = action.equals("give") ? "keys.received." + type : "keys.taken." + type;
 
+            Map<String, String> placeholders = new HashMap<>();
+            placeholders.put("%player%", player.getName());
+            placeholders.put("%amount%", String.valueOf(amount));
+            placeholders.put("%key%", key.getName());
+            placeholders.put("%identifier%", identifier);
+            placeholders.put("%type%", type);
+
             if (type.equalsIgnoreCase("physical")) {
 
                 boolean success = false;
@@ -196,8 +203,10 @@ public class KeySubCommand implements SubCommand {
                             command.getPlugin().getResponsesConfiguration().getString("keys." + action)
                                     .replace("%player%", player.getName())
                                     .replace("%amount%", String.valueOf(amount))
+                                    .replace("%key%", key.getName())
                                     .replace("%identifier%", identifier)
                                     .replace("%type%", type)
+
                     ));
 
                     if (player.isOnline()) {
@@ -206,10 +215,7 @@ public class KeySubCommand implements SubCommand {
                                 command.getPlugin().getResponsesConfiguration().getStringList(successResponseKey),
                                 player.getPlayer(),
                                 0,
-                                Map.of(
-                                        "%amount%", String.valueOf(amount),
-                                        "%identifier%", identifier
-                                )
+                                placeholders
                         );
 
                     }
@@ -260,8 +266,10 @@ public class KeySubCommand implements SubCommand {
                             command.getPlugin().getResponsesConfiguration().getString("keys." + action)
                                     .replace("%player%", player.getName())
                                     .replace("%amount%", String.valueOf(finalAmount))
+                                    .replace("%key%", key.getName())
                                     .replace("%identifier%", identifier)
                                     .replace("%type%", type)
+
                     ));
 
                     if (player.isOnline()) {
@@ -270,10 +278,7 @@ public class KeySubCommand implements SubCommand {
                                 command.getPlugin().getResponsesConfiguration().getStringList(successResponseKey),
                                 player.getPlayer(),
                                 0,
-                                Map.of(
-                                        "%amount%", String.valueOf(finalAmount),
-                                        "%identifier%", identifier
-                                )
+                                placeholders
                         );
 
                     }
