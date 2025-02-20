@@ -186,7 +186,7 @@ public class ActionParser {
     private String replacePlaceholders(String str, Map<String, String> placeholders) {
 
         for (Map.Entry<String, String> entry : placeholders.entrySet()) {
-            str = str.replace(entry.getKey(), entry.getValue());
+            str = Colorize.color(str.replace(entry.getKey(), entry.getValue()));
         }
 
         return str;
