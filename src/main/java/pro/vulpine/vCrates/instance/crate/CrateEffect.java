@@ -3,10 +3,7 @@ package pro.vulpine.vCrates.instance.crate;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.scheduler.BukkitRunnable;
-import pro.vulpine.vCrates.instance.crate.effect.Effect;
-import pro.vulpine.vCrates.instance.crate.effect.HelixEffect;
-import pro.vulpine.vCrates.instance.crate.effect.SpiralEffect;
-import pro.vulpine.vCrates.instance.crate.effect.VortexEffect;
+import pro.vulpine.vCrates.instance.crate.effect.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +35,11 @@ public class CrateEffect extends BukkitRunnable {
         effects.put("HELIX", new HelixEffect(this));
         effects.put("SPIRAL", new SpiralEffect(this));
         effects.put("VORTEX", new VortexEffect(this));
+        effects.put("WAVE", new WaveEffect(this));
+        effects.put("RING", new RingEffect(this));
+        effects.put("AURA", new AuraEffect(this));
+        effects.put("CIRCLE", new CircleEffect(this));
+        effects.put("SQUARE", new SquareEffect(this));
     }
 
     public void setCrate(Crate crate) {
