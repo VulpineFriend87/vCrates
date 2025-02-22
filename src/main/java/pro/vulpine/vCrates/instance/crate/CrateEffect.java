@@ -39,6 +39,7 @@ public class CrateEffect extends BukkitRunnable {
         effects.put("AURA", new AuraEffect(this));
         effects.put("CIRCLE", new CircleEffect(this));
         effects.put("SQUARE", new SquareEffect(this));
+        effects.put("AROUND", new AroundEffect(this));
     }
 
     public void setCrate(Crate crate) {
