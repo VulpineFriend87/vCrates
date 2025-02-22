@@ -58,7 +58,7 @@ keys:
     physical:
       - "[TITLE] player; &c&lKEYS TAKEN!; &7&3x%amount% &f%key% &7key(s) have been taken from you!"
       - "[SOUND] player; ENTITY_VILLAGER_NO"
-      - "[SOUND] player; ENTITY_ITEM_DROP"
+      - "[SOUND] player; ENTITY_ITEM_BREAK"
     virtual:
       - "[TITLE] player; &c&lKEYS TAKEN!; &7&3x%amount% &f%key% &7virtual key(s) have been taken from you!"
       - "[SOUND] player; ENTITY_VILLAGER_NO"
