@@ -69,7 +69,7 @@ keys:
   invalid_type: "&7[&3v&bCrates&7] &cInvalid key type."
   virtual_not_allowed: "&7[&3v&bCrates&7] &cVirtual keys are not allowed for this key."
   offline: "&7[&3v&bCrates&7] &cPlayer is offline."
-  no_keys_found: "&7[&3v&bCrates&7] &cThe player doesn't have any keys of this type."
+  not_enough: "&7[&3v&bCrates&7] &cPlayer doesn't have enough keys."
   not_enough_space: "&7[&3v&bCrates&7] &cThe player's inventory does not have enough space."
 
   balance:

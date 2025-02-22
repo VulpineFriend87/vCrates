@@ -159,9 +159,11 @@ public class KeySubCommand implements SubCommand {
 
                 } else if (action.equalsIgnoreCase("take")) {
 
-                    int itemsRemoved = 0;
+                    Player onlinePlayer = player.getPlayer();
 
-                    for (ItemStack item : player.getPlayer().getInventory().getContents()) {
+                    int totalAvailable = 0;
+
+                    for (ItemStack item : onlinePlayer.getInventory().getContents()) {
 
                         if (item != null && item.getType() != Material.AIR) {
 
@@ -169,31 +171,50 @@ public class KeySubCommand implements SubCommand {
 
                             if (keyIdentifier != null && keyIdentifier.equals(identifier)) {
 
-                                if (itemsRemoved < amount) {
+                                totalAvailable += item.getAmount();
 
-                                    player.getPlayer().getInventory().removeItem(item);
-                                    itemsRemoved++;
-
-                                }
                             }
+
                         }
+
                     }
 
-                    if (itemsRemoved > 0) {
-
-                        amount = itemsRemoved;
-
-                        success = true;
-
-                    } else {
+                    if (totalAvailable < amount) {
 
                         sender.sendMessage(Colorize.color(
-                                command.getPlugin().getResponsesConfiguration().getString("keys.no_keys_found")
+                                command.getPlugin().getResponsesConfiguration().getString("keys.not_enough")
                         ));
 
                         return;
 
                     }
+
+                    int itemsRemoved = 0;
+
+                    for (ItemStack item : onlinePlayer.getInventory().getContents()) {
+
+                        if (item != null && item.getType() != Material.AIR && itemsRemoved < amount) {
+
+                            String keyIdentifier = KeyUtils.getKeyIdentifier(item);
+
+                            if (keyIdentifier != null && keyIdentifier.equals(identifier)) {
+
+                                int available = item.getAmount();
+                                int needed = amount - itemsRemoved;
+                                int removeCount = Math.min(available, needed);
+
+                                item.setAmount(available - removeCount);
+
+                                itemsRemoved += removeCount;
+                            }
+
+                        }
+
+                    }
+
+                    amount = itemsRemoved;
+
+                    success = true;
 
                 }
 
