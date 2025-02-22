@@ -56,11 +56,11 @@ keys:
 
   taken:
     physical:
-      - "[TITLE] player; &c&lKEYS TAKEN!; &7&3x%amount% &f%key% &7(%identifier%) &7key(s) have been taken from you!"
+      - "[TITLE] player; &c&lKEYS TAKEN!; &7&3x%amount% &f%key% &7key(s) have been taken from you!"
       - "[SOUND] player; ENTITY_VILLAGER_NO"
       - "[SOUND] player; ENTITY_ITEM_DROP"
     virtual:
-      - "[TITLE] player; &c&lKEYS TAKEN!; &7&3x%amount% &f%key% &7(%identifier%) &7virtual key(s) have been taken from you!"
+      - "[TITLE] player; &c&lKEYS TAKEN!; &7&3x%amount% &f%key% &7virtual key(s) have been taken from you!"
       - "[SOUND] player; ENTITY_VILLAGER_NO"
 
   give: "&7[&3v&bCrates&7] &7Gave &3x%amount% &b%key% &7(%identifier%) &7%type% key(s) to &b%player%&7."
