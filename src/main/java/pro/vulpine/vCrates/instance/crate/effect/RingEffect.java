@@ -5,11 +5,11 @@ import org.bukkit.Particle;
 import org.bukkit.scheduler.BukkitRunnable;
 import pro.vulpine.vCrates.instance.crate.CrateEffect;
 
-public class WaveEffect implements Effect {
+public class RingEffect implements Effect {
 
     private final CrateEffect crateEffect;
 
-    public WaveEffect(CrateEffect crateEffect) {
+    public RingEffect(CrateEffect crateEffect) {
 
         this.crateEffect = crateEffect;
 
