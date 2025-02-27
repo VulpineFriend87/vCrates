@@ -365,7 +365,9 @@ public class KeySubCommand implements SubCommand {
 
                 }
 
-                return options;
+                return options.stream()
+                        .filter(option -> option.toLowerCase().startsWith(args[3].toLowerCase()))
+                        .collect(Collectors.toList());
             }
         }
 
