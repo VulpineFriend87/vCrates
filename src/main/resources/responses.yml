@@ -75,9 +75,12 @@ keys:
   balance:
     header: "&7[&3v&bCrates&7] &7Virtual keys balance:"
     entry: "&7 - &b%key% &7(&3x%amount%&7)"
+    empty: "&7 No virtual keys."
 
 unknown_command: "&7[&3v&bCrates&7] &cUnknown command. &7Use &b/vcrates help &7to see the available commands."
 wrong_arguments: "&7[&3v&bCrates&7] &cWrong arguments. &7Use &b/vcrates help &7to see the available commands."
 no_profile: "&7[&3v&bCrates&7] &cYour profile wasn't loaded. Try leaving the server and joining again or contact a server administrator."
 player_not_found: "&7[&3v&bCrates&7] &cPlayer not found."
 invalid_amount: "&7[&3v&bCrates&7] &cInvalid amount."
+only_players: "&7[&3v&bCrates&7] &cOnly players can use this command."
+player_not_online: "&7[&3v&bCrates&7] &cPlayer is not online."
