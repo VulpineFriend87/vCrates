@@ -8,6 +8,7 @@ import org.bukkit.command.TabCompleter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.vulpine.vCrates.VCrates;
+import pro.vulpine.vCrates.command.subcommand.BalanceSubCommand;
 import pro.vulpine.vCrates.command.subcommand.HelpSubCommand;
 import pro.vulpine.vCrates.command.subcommand.KeySubCommand;
 import pro.vulpine.vCrates.command.subcommand.ReloadSubCommand;
@@ -29,6 +30,7 @@ public class VCratesCommand implements CommandExecutor, TabCompleter {
         subCommands.put("help", new HelpSubCommand(this));
         subCommands.put("reload", new ReloadSubCommand(this));
         subCommands.put("key", new KeySubCommand(this));
+        subCommands.put("balance", new BalanceSubCommand(this));
 
     }
 
