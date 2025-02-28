@@ -9,6 +9,7 @@ import pro.vulpine.vCrates.command.VCratesCommand;
 import pro.vulpine.vCrates.instance.Key;
 import pro.vulpine.vCrates.instance.Profile;
 import pro.vulpine.vCrates.instance.SubCommand;
+import pro.vulpine.vCrates.utils.PermissionChecker;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +29,16 @@ public class BalanceSubCommand implements SubCommand {
     public void execute(CommandSender sender, String[] args) {
 
         if (args.length == 0) {
+
+            if (!PermissionChecker.hasPermission(sender, "balance", "self")) {
+
+                sender.sendMessage(Colorize.color(
+                        command.getPlugin().getResponsesConfiguration().getString("no_permission")
+                ));
+
+                return;
+
+            }
 
             if (!(sender instanceof Player)) {
 
@@ -95,9 +106,17 @@ public class BalanceSubCommand implements SubCommand {
 
         } else if (args.length == 1) {
 
-            String target = args[0];
+            if (!PermissionChecker.hasPermission(sender, "balance", "other")) {
 
-            OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(target);
+                sender.sendMessage(Colorize.color(
+                        command.getPlugin().getResponsesConfiguration().getString("wrong_arguments")
+                ));
+
+                return;
+
+            }
+
+            OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(args[0]);
 
             Profile targetProfile = command.getPlugin().getProfileManager().getProfile(targetPlayer.getUniqueId());
 
@@ -187,6 +206,12 @@ public class BalanceSubCommand implements SubCommand {
 
             });
 
+        } else {
+
+            sender.sendMessage(Colorize.color(
+                    command.getPlugin().getResponsesConfiguration().getString("wrong_arguments")
+            ));
+
         }
 
     }
@@ -194,7 +219,7 @@ public class BalanceSubCommand implements SubCommand {
     @Override
     public List<String> executeTabComplete(CommandSender sender, String[] args) {
 
-        if (args.length == 1) {
+        if (args.length == 1 && PermissionChecker.hasPermission(sender, "balance", "other")) {
 
             return Bukkit.getOnlinePlayers().stream()
                     .map(Player::getName)
