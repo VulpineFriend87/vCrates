@@ -13,6 +13,7 @@ import pro.vulpine.vCrates.command.subcommand.HelpSubCommand;
 import pro.vulpine.vCrates.command.subcommand.KeySubCommand;
 import pro.vulpine.vCrates.command.subcommand.ReloadSubCommand;
 import pro.vulpine.vCrates.instance.SubCommand;
+import pro.vulpine.vCrates.utils.PermissionChecker;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -53,6 +54,16 @@ public class VCratesCommand implements CommandExecutor, TabCompleter {
             return;
         }
 
+        if (!PermissionChecker.hasPermission(sender, args[0].toLowerCase())) {
+
+            sender.sendMessage(Colorize.color(
+                    plugin.getResponsesConfiguration().getString("unknown_command")
+            ));
+
+            return;
+
+        }
+
         SubCommand subCommand = subCommands.get(args[0].toLowerCase());
 
         if (subCommand != null) {
@@ -73,6 +84,7 @@ public class VCratesCommand implements CommandExecutor, TabCompleter {
 
         if (args.length == 1) {
             return subCommands.keySet().stream()
+                    .filter(cmd -> PermissionChecker.hasPermission(sender, cmd.toLowerCase()))
                     .filter(s -> s.toLowerCase().startsWith(args[0].toLowerCase()))
                     .collect(Collectors.toList());
         }
