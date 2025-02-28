@@ -11,11 +11,11 @@ import pro.vulpine.vCrates.command.VCratesCommand;
 import pro.vulpine.vCrates.instance.Key;
 import pro.vulpine.vCrates.instance.SubCommand;
 import pro.vulpine.vCrates.utils.KeyUtils;
+import pro.vulpine.vCrates.utils.PermissionChecker;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class KeySubCommand implements SubCommand {
 
@@ -30,6 +30,16 @@ public class KeySubCommand implements SubCommand {
 
         if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
 
+            if (!PermissionChecker.hasPermission(sender, "key", "help")) {
+
+                sender.sendMessage(Colorize.color(
+                        command.getPlugin().getResponsesConfiguration().getString("wrong_arguments")
+                ));
+
+                return;
+
+            }
+
             List<String> help = command.getPlugin().getResponsesConfiguration().getStringList("keys.help");
             for (String line : help) {
                 sender.sendMessage(Colorize.color(line));
@@ -42,6 +52,32 @@ public class KeySubCommand implements SubCommand {
         if (args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("take")) {
 
             String action = args[0];
+
+            if (action.equalsIgnoreCase("give")) {
+
+                if (!PermissionChecker.hasPermission(sender, "key", "give")) {
+
+                    sender.sendMessage(Colorize.color(
+                            command.getPlugin().getResponsesConfiguration().getString("wrong_arguments")
+                    ));
+
+                    return;
+
+                }
+
+            } else if (action.equalsIgnoreCase("take")) {
+
+                if (!PermissionChecker.hasPermission(sender, "key", "take")) {
+
+                    sender.sendMessage(Colorize.color(
+                            command.getPlugin().getResponsesConfiguration().getString("wrong_arguments")
+                    ));
+
+                    return;
+
+                }
+
+            }
 
             if (args.length < 4) {
 
@@ -330,13 +366,29 @@ public class KeySubCommand implements SubCommand {
     public List<String> executeTabComplete(CommandSender sender, String[] args) {
 
         if (args.length == 1) {
-            return Stream.of("help", "give", "take")
+
+            List<String> options = new ArrayList<>();
+
+            if (PermissionChecker.hasPermission(sender, "key", "help")) {
+                options.add("help");
+            }
+
+            if (PermissionChecker.hasPermission(sender, "key", "give")) {
+                options.add("give");
+            }
+
+            if (PermissionChecker.hasPermission(sender, "key", "take")) {
+                options.add("take");
+            }
+
+            return options.stream()
                     .filter(s -> s.toLowerCase().startsWith(args[0].toLowerCase()))
                     .collect(Collectors.toList());
 
         }
 
-        if (args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("take")) {
+        if (args[0].equalsIgnoreCase("give") && PermissionChecker.hasPermission(sender, "key", "give") ||
+            args[0].equalsIgnoreCase("take") && PermissionChecker.hasPermission(sender, "key", "take")) {
 
             if (args.length == 2) {
 
@@ -350,6 +402,7 @@ public class KeySubCommand implements SubCommand {
             } else if (args.length == 3) {
 
                 String input = args[2].toLowerCase();
+
                 return command.getPlugin().getKeyManager().getKeys().values().stream()
                         .map(Key::getIdentifier)
                         .filter(key -> key.toLowerCase().startsWith(input))
@@ -368,10 +421,13 @@ public class KeySubCommand implements SubCommand {
                 return options.stream()
                         .filter(option -> option.toLowerCase().startsWith(args[3].toLowerCase()))
                         .collect(Collectors.toList());
+
             }
+
         }
 
         return Collections.emptyList();
+
     }
 
 }
