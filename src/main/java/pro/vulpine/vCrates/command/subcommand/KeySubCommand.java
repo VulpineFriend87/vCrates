@@ -403,7 +403,7 @@ public class KeySubCommand implements SubCommand {
 
                 String input = args[2].toLowerCase();
 
-                return command.getPlugin().getKeyManager().getKeys().values().stream()
+                return command.getPlugin().getKeyManager().getKeys().stream()
                         .map(Key::getIdentifier)
                         .filter(key -> key.toLowerCase().startsWith(input))
                         .collect(Collectors.toList());
@@ -412,7 +412,7 @@ public class KeySubCommand implements SubCommand {
 
                 List<String> options = new ArrayList<>(List.of("physical"));
 
-                if (command.getPlugin().getKeyManager().getKeys().values().stream().anyMatch(Key::isVirtualAllowed)) {
+                if (command.getPlugin().getKeyManager().getKeys().stream().anyMatch(Key::isVirtualAllowed)) {
 
                     options.add("virtual");
 

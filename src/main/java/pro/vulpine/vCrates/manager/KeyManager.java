@@ -7,15 +7,13 @@ import pro.vulpine.vCrates.configuration.KeysConfiguration;
 import pro.vulpine.vCrates.instance.Key;
 import pro.vulpine.vCrates.utils.logger.Logger;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class KeyManager {
 
     private final VCrates plugin;
 
-    private final Map<String, Key> keys = new HashMap<>();
+    private final List<Key> keys = new ArrayList<>();
 
     public KeyManager(VCrates plugin) {
         this.plugin = plugin;
@@ -24,25 +22,27 @@ public class KeyManager {
     }
 
     public void reload() {
+
+        keys.clear();
+
         loadKeys(plugin.getKeysConfiguration());
+
     }
 
     private void loadKeys(KeysConfiguration config) {
 
-        keys.clear();
+        Set<String> keyConfigurationKeys = config.getKeys(false);
 
-        Set<String> keyKeys = config.getKeys(false);
-
-        if (keyKeys.isEmpty()) {
+        if (keyConfigurationKeys.isEmpty()) {
 
             Logger.error("No keys found, please add them.", "KeyManager");
             return;
 
         }
 
-        Logger.info("Found " + keyKeys.size() + " key(s)", "KeyManager");
+        Logger.info("Found " + keyConfigurationKeys.size() + " key(s)", "KeyManager");
 
-        for (String identifier : keyKeys) {
+        for (String identifier : keyConfigurationKeys) {
 
             ConfigurationSection keySection = config.getConfigurationSection(identifier);
 
@@ -56,7 +56,7 @@ public class KeyManager {
             Material item = Material.valueOf(keySection.getString("item"));
 
             Key key = new Key(virtualAllowed, identifier, name, item);
-            keys.put(identifier, key);
+            keys.add(key);
 
         }
 
@@ -65,10 +65,17 @@ public class KeyManager {
     }
 
     public Key getKey(String identifier) {
-        return keys.get(identifier);
+
+        for (Key key : keys) {
+            if (key.getIdentifier().equals(identifier)) {
+                return key;
+            }
+        }
+
+        return null;
     }
 
-    public Map<String, Key> getKeys() {
+    public List<Key> getKeys() {
         return keys;
     }
 

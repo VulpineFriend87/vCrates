@@ -20,7 +20,7 @@ public class CrateManager {
 
     private final VCrates plugin;
 
-    private final Map<String, Crate> crates = new HashMap<>();
+    private final List<Crate> crates = new ArrayList<>();
 
     public CrateManager(VCrates plugin) {
         this.plugin = plugin;
@@ -38,18 +38,18 @@ public class CrateManager {
 
     private void loadCrates(CratesConfiguration config) {
 
-        Set<String> crateKeys = config.getKeys(false);
+        Set<String> crateConfigurationKeys = config.getKeys(false);
 
-        if (crateKeys.isEmpty()) {
+        if (crateConfigurationKeys.isEmpty()) {
 
             Logger.warn("No crates found, please add them.", "CrateManager");
             return;
 
         }
 
-        Logger.info("Found " + crateKeys.size() + " crate(s)", "CrateManager");
+        Logger.info("Found " + crateConfigurationKeys.size() + " crate(s)", "CrateManager");
 
-        for (String identifier : crateKeys) {
+        for (String identifier : crateConfigurationKeys) {
 
             ConfigurationSection crateSection = config.getConfigurationSection(identifier);
 
@@ -63,12 +63,14 @@ public class CrateManager {
 
             boolean crateKeysRequired = crateSection.getBoolean("keys.required", true);
             List<String> crateKeysAllowed = crateSection.getStringList("keys.allowed");
-            CrateKeys crateCrateKeys = new CrateKeys(crateKeysRequired, crateKeysAllowed);
+            CrateKeys crateKeys = new CrateKeys(crateKeysRequired, crateKeysAllowed);
 
             boolean pushbackEnabled = crateSection.getBoolean("pushback.enabled", true);
             double pushbackYOffset = crateSection.getDouble("pushback.y_offset", -0.4);
             double pushbackMultiply = crateSection.getDouble("pushback.multiply", -1.25);
-            CratePushback crateCratePushback = new CratePushback(pushbackEnabled, pushbackYOffset, pushbackMultiply);
+            CratePushback cratePushback = new CratePushback(pushbackEnabled, pushbackYOffset, pushbackMultiply);
+
+            // BLOCKS
 
             List<Location> blocks = new ArrayList<>();
             List<String> blocksStrings = crateSection.getStringList("blocks");
@@ -93,12 +95,14 @@ public class CrateManager {
             Particle effectParticle = Particle.valueOf(crateSection.getString("effect.particle", "ELECTRIC_SPARK"));
             double effectRadius = crateSection.getDouble("effect.radius", 1);
             double effectSpeed = crateSection.getDouble("effect.speed", 1);
-            CrateEffect crateCrateEffect = new CrateEffect(effectEnabled, effectType, effectParticle, effectRadius, effectSpeed);
+            CrateEffect crateEffect = new CrateEffect(effectEnabled, effectType, effectParticle, effectRadius, effectSpeed);
 
             boolean hologramEnabled = crateSection.getBoolean("hologram.enabled", true);
             List<String> hologramLines = crateSection.getStringList("hologram.lines");
             double hologramYOffset = crateSection.getDouble("hologram.y_offset", 0);
-            CrateHologram crateCrateHologram = new CrateHologram(hologramEnabled, blocks, hologramLines, hologramYOffset);
+            CrateHologram crateHologram = new CrateHologram(hologramEnabled, blocks, hologramLines, hologramYOffset);
+
+            // REWARDS
 
             List<Reward> rewards = new ArrayList<>();
 
@@ -115,11 +119,13 @@ public class CrateManager {
                     }
 
                     String rewardName = rewardSection.getString("name");
-                    Material displayItem = Material.getMaterial(rewardSection.getString("display_item").toUpperCase());
-                    if (displayItem == null) {
+                    Material rewardDisplayItem = Material.getMaterial(rewardSection.getString("display_item").toUpperCase());
+                    if (rewardDisplayItem == null) {
                         Logger.warn("Display item " + rewardSection.getString("display_item") + " is not a valid material, skipping.", "CrateManager");
-                        displayItem = Material.STONE;
+                        continue;
                     }
+
+                    // ITEMS
 
                     List<RewardItem> rewardItems = new ArrayList<>();
                     List<Map<?, ?>> itemsList = rewardSection.getMapList("items");
@@ -131,23 +137,26 @@ public class CrateManager {
                         List<String> itemLore = (List<String>) itemData.get("lore");
 
                         Material itemType = Material.getMaterial(itemData.get("type").toString().toUpperCase());
-                        int amount = (int) itemData.get("amount");
+                        int itemAmount = (int) itemData.get("amount");
 
-                        if (itemType != null) {
-                            rewardItems.add(new RewardItem(itemName, itemLore, itemType, amount));
-                        } else {
+                        if (itemType == null) {
                             Logger.warn("Item " + itemData.get("type") + " is not a valid material, skipping.", "CrateManager");
+                            continue;
                         }
+
+                        rewardItems.add(new RewardItem(itemName, itemLore, itemType, itemAmount));
 
                     }
 
                     List<String> rewardActions = rewardSection.getStringList("actions");
 
-                    rewards.add(new Reward(rewardIdentifier, rewardName, displayItem, rewardItems, rewardActions));
+                    rewards.add(new Reward(rewardIdentifier, rewardName, rewardDisplayItem, rewardRarity, rewardItems, rewardActions));
 
                 }
 
             }
+
+            // MILESTONES
 
             List<Milestone> milestones = new ArrayList<>();
 
@@ -157,10 +166,10 @@ public class CrateManager {
 
                 for (Map<?, ?> milestoneData : milestonesList) {
 
-                    int after = (int) milestoneData.get("after");
-                    List<String> actions = (List<String>) milestoneData.get("actions");
+                    int milestoneAfter = (int) milestoneData.get("after");
+                    List<String> milestoneActions = (List<String>) milestoneData.get("actions");
 
-                    MilestoneRepeats repeats = new MilestoneRepeats(
+                    MilestoneRepeats milestoneRepeats = new MilestoneRepeats(
                             (boolean) ((Map<?, ?>) milestoneData.get("repeats")).get("enabled"),
                             (int) ((Map<?, ?>) milestoneData.get("repeats")).get("times")
                     );
@@ -170,10 +179,10 @@ public class CrateManager {
                     for (Map<?, ?> rewardData : (List<Map<?, ?>>) milestoneData.get("rewards")) {
 
                         String rewardName = (String) rewardData.get("name");
-                        Material displayItem = Material.getMaterial(rewardData.get("display_item").toString().toUpperCase());
-                        if (displayItem == null) {
+                        Material rewardDisplayItem = Material.getMaterial(rewardData.get("display_item").toString().toUpperCase());
+                        if (rewardDisplayItem == null) {
                             Logger.warn("Display item " + rewardData.get("display_item") + " is not a valid material, skipping.", "CrateManager");
-                            displayItem = Material.STONE;
+                            continue;
                         }
 
                         List<RewardItem> rewardItems = new ArrayList<>();
@@ -185,24 +194,24 @@ public class CrateManager {
                             Material itemType = Material.getMaterial(itemData.get("type").toString().toUpperCase());
                             if (itemType == null) {
                                 Logger.warn("Item type " + itemData.get("type") + " is not a valid material, skipping.", "CrateManager");
-                                itemType = Material.STONE;
+                                continue;
                             }
-                            int amount = (int) itemData.get("amount");
+                            int itemAmount = (int) itemData.get("amount");
 
-                            rewardItems.add(new RewardItem(itemName, itemLore, itemType, amount));
+                            rewardItems.add(new RewardItem(itemName, itemLore, itemType, itemAmount));
 
                         }
 
-                        milestoneRewards.add(new MilestoneReward(rewardName, displayItem, rewardItems));
+                        milestoneRewards.add(new MilestoneReward(rewardName, rewardDisplayItem, rewardItems));
 
                     }
 
-                    milestones.add(new Milestone(after, actions, repeats, milestoneRewards));
+                    milestones.add(new Milestone(milestoneAfter, milestoneActions, milestoneRepeats, milestoneRewards));
 
                 }
             }
 
-            Crate crate = new Crate(this, crateCrateKeys, crateCratePushback, crateCrateEffect, crateCrateHologram, identifier, name, cooldown, blocks, milestones, rewards);
+            Crate crate = new Crate(this, crateKeys, cratePushback, crateEffect, crateHologram, identifier, name, cooldown, blocks, milestones, rewards);
 
             crate.getCrateEffect().setCrate(crate);
 
@@ -212,7 +221,7 @@ public class CrateManager {
 
             }
 
-            crates.put(identifier, crate);
+            crates.add(crate);
 
         }
 
@@ -222,7 +231,7 @@ public class CrateManager {
 
     public void unloadCrates() {
 
-        for (Crate crate : crates.values()) {
+        for (Crate crate : crates) {
             crate.getCrateHologram().remove();
             crate.getCrateEffect().cancel();
         }
@@ -231,19 +240,28 @@ public class CrateManager {
     }
 
     public Crate getCrate(String identifier) {
-        return crates.get(identifier);
+
+        for (Crate crate : crates) {
+            if (crate.getIdentifier().equals(identifier)) {
+                return crate;
+            }
+        }
+
+        return null;
     }
 
     public Crate getCrate(Location location) {
-        for (Crate crate : crates.values()) {
+
+        for (Crate crate : crates) {
             if (crate.getBlocks().contains(location)) {
                 return crate;
             }
         }
+
         return null;
     }
 
-    public Map<String, Crate> getCrates() {
+    public List<Crate> getCrates() {
         return crates;
     }
 
