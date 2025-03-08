@@ -1,6 +1,6 @@
 package pro.vulpine.vCrates.utils.logger;
 
-import it.vulpinefriend87.easyutils.Colorize;
+import pro.vulpine.vCrates.utils.Colorize;
 import org.bukkit.Bukkit;
 
 public class Logger {

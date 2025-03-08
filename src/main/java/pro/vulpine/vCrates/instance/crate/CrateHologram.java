@@ -1,6 +1,6 @@
 package pro.vulpine.vCrates.instance.crate;
 
-import it.vulpinefriend87.easyutils.Colorize;
+import pro.vulpine.vCrates.utils.Colorize;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;

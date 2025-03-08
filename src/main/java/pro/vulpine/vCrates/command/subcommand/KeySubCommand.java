@@ -1,6 +1,6 @@
 package pro.vulpine.vCrates.command.subcommand;
 
-import it.vulpinefriend87.easyutils.Colorize;
+import pro.vulpine.vCrates.utils.Colorize;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;

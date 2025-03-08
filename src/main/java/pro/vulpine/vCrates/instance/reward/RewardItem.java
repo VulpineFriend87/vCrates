@@ -1,6 +1,6 @@
 package pro.vulpine.vCrates.instance.reward;
 
-import it.vulpinefriend87.easyutils.Colorize;
+import pro.vulpine.vCrates.utils.Colorize;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;

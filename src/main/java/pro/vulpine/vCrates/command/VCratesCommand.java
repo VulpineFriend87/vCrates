@@ -1,6 +1,6 @@
 package pro.vulpine.vCrates.command;
 
-import it.vulpinefriend87.easyutils.Colorize;
+import pro.vulpine.vCrates.utils.Colorize;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

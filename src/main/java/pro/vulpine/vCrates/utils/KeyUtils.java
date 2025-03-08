@@ -1,6 +1,5 @@
 package pro.vulpine.vCrates.utils;
 
-import it.vulpinefriend87.easyutils.Colorize;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
