@@ -34,6 +34,9 @@ public class ReloadSubCommand implements SubCommand {
         command.getPlugin().getMainConfiguration().reload();
         command.getPlugin().getMainConfiguration().save();
 
+        command.getPlugin().getRaritiesConfiguration().reload();
+        command.getPlugin().getRaritiesConfiguration().save();
+
         command.getPlugin().getCratesConfiguration().reload();
         command.getPlugin().getCratesConfiguration().save();
 
@@ -45,6 +48,18 @@ public class ReloadSubCommand implements SubCommand {
 
         sender.sendMessage(Colorize.color(
                 "&7[&3v&bCrates&7] &aConfiguration files reloaded in &7(" + (System.currentTimeMillis() - configStartTime) + "ms)"
+        ));
+
+        sender.sendMessage(Colorize.color(
+                "&7[&3v&bCrates&7] &7Reloading rarity manager..."
+        ));
+
+        long rarityManagerStartTime = System.currentTimeMillis();
+
+        command.getPlugin().getRarityManager().reload();
+
+        sender.sendMessage(Colorize.color(
+                "&7[&3v&bCrates&7] &aRarity manager reloaded in &7(" + (System.currentTimeMillis() - rarityManagerStartTime) + "ms)"
         ));
 
         sender.sendMessage(Colorize.color(

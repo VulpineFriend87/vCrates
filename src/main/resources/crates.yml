@@ -46,6 +46,7 @@
 #     example: # Reward identifier
 #       name: "&9&lEXAMPLE REWARD" # Display name of the reward (used in placeholders)
 #       display_item: DIAMOND_BLOCK # Display item of the reward
+#       rarity: common # Rarity of the reward (rarities.yml)
 #       items: # List of items that will be given to the player when they win this reward
 #         - name: "&9&lEXAMPLE ITEM" # Display name of the item
 #           lore: # Lore of the item

@@ -1,0 +1,18 @@
+# vCrates - Rarities configuration
+# By VulpineFriend87
+
+common:
+  name: "&7&lCOMMON"
+  weight: 50
+
+uncommon:
+  name: "&2&lUNCOMMON"
+  weight: 30
+
+rare:
+  name: "&9&lRARE"
+  weight: 15
+
+legendary:
+  name: "&6&lLEGENDARY"
+  weight: 5

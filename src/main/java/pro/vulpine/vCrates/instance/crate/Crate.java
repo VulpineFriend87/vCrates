@@ -10,6 +10,7 @@ import pro.vulpine.vCrates.instance.reward.Reward;
 import pro.vulpine.vCrates.instance.reward.RewardItem;
 import pro.vulpine.vCrates.manager.CrateManager;
 import pro.vulpine.vCrates.utils.KeyUtils;
+import pro.vulpine.vCrates.instance.Rarity;
 
 import java.util.*;
 
@@ -115,25 +116,64 @@ public class Crate {
 
             ItemStack key = player.getInventory().getItemInMainHand();
 
+            profile.incrementStatistic("keys-used", KeyUtils.getKeyIdentifier(key));
+
             player.getInventory().getItemInMainHand().setAmount(key.getAmount() - 1);
 
         } else {
 
-            profile.useKey(crateKeys.getAllowedKeys());
+            String identifier = profile.useKey(crateKeys.getAllowedKeys());
+
+            profile.incrementStatistic("keys-used", identifier);
 
         }
 
-        Reward reward = rewards.get((int) (Math.random() * rewards.size()));
+        // REWARD SELECTION
 
-        placeholders.put("%reward%", reward.getName());
+        int totalWeight = 0;
+        Map<Rarity, List<Reward>> rarityRewardMap = new HashMap<>();
 
-        for (RewardItem item : reward.getItems()) {
+        for (Reward reward : rewards) {
+            Rarity rarity = reward.getRarity();
+            if (rarity != null) {
+                totalWeight += rarity.getWeight();
+                rarityRewardMap.computeIfAbsent(rarity, k -> new ArrayList<>()).add(reward);
+            }
+        }
+
+        Random random = new Random();
+        int randomValue = random.nextInt(totalWeight);
+
+        int currentWeight = 0;
+        Rarity selectedRarity = null;
+            profile.useKey(crateKeys.getAllowedKeys());
+
+        for (Map.Entry<Rarity, List<Reward>> entry : rarityRewardMap.entrySet()) {
+            currentWeight += entry.getKey().getWeight();
+            if (randomValue < currentWeight) {
+                selectedRarity = entry.getKey();
+                break;
+            }
+        }
+
+        Reward selectedReward = null;
+
+        if (selectedRarity != null) {
+            List<Reward> selectedRarityRewards = rarityRewardMap.get(selectedRarity);
+            selectedReward = selectedRarityRewards.get(random.nextInt(selectedRarityRewards.size()));
+        }
+
+        // OPENING
+
+        placeholders.put("%reward%", selectedReward.getName());
+
+        for (RewardItem item : selectedReward.getItems()) {
             player.getInventory().addItem(RewardItem.toItemStack(item));
         }
 
         profile.incrementStatistic("crates-opened", identifier);
 
-        crateManager.getPlugin().getActionParser().executeActions(reward.getActions(), player, 0, placeholders);
+        crateManager.getPlugin().getActionParser().executeActions(selectedReward.getActions(), player, 0, placeholders);
 
         for (Milestone milestone : milestones) {
 

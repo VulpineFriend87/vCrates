@@ -1,6 +1,7 @@
 package pro.vulpine.vCrates.instance.reward;
 
 import org.bukkit.Material;
+import pro.vulpine.vCrates.instance.Rarity;
 
 import java.util.List;
 
@@ -9,13 +10,15 @@ public class Reward {
     private final String identifier;
     private final String name;
     private final Material displayItem;
+    private final Rarity rarity;
     private final List<RewardItem> items;
     private final List<String> actions;
 
-    public Reward(String identifier, String name, Material displayItem, List<RewardItem> items, List<String> actions) {
+    public Reward(String identifier, String name, Material displayItem, Rarity rarity, List<RewardItem> items, List<String> actions) {
         this.identifier = identifier;
         this.name = name;
         this.displayItem = displayItem;
+        this.rarity = rarity;
         this.items = items;
         this.actions = actions;
     }
@@ -30,6 +33,10 @@ public class Reward {
 
     public Material getDisplayItem() {
         return displayItem;
+    }
+
+    public Rarity getRarity() {
+        return rarity;
     }
 
     public List<RewardItem> getItems() {

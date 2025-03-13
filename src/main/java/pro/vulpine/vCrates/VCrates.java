@@ -3,10 +3,7 @@ package pro.vulpine.vCrates;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import pro.vulpine.vCrates.command.VCratesCommand;
-import pro.vulpine.vCrates.configuration.CratesConfiguration;
-import pro.vulpine.vCrates.configuration.KeysConfiguration;
-import pro.vulpine.vCrates.configuration.MainConfiguration;
-import pro.vulpine.vCrates.configuration.ResponsesConfiguration;
+import pro.vulpine.vCrates.configuration.*;
 import pro.vulpine.vCrates.instance.StorageMethod;
 import pro.vulpine.vCrates.listener.CrateListener;
 import pro.vulpine.vCrates.listener.PlayerListener;
@@ -18,12 +15,14 @@ import pro.vulpine.vCrates.utils.ActionParser;
 public final class VCrates extends JavaPlugin {
 
     private MainConfiguration mainConfiguration;
-    private ResponsesConfiguration responsesConfiguration;
+    private RaritiesConfiguration raritiesConfiguration;
     private CratesConfiguration cratesConfiguration;
     private KeysConfiguration keysConfiguration;
+    private ResponsesConfiguration responsesConfiguration;
 
     private ActionParser actionParser;
 
+    private RarityManager rarityManager;
     private CrateManager crateManager;
     private KeyManager keyManager;
 
@@ -34,9 +33,10 @@ public final class VCrates extends JavaPlugin {
     public void onEnable() {
 
         mainConfiguration = new MainConfiguration(this);
-        responsesConfiguration = new ResponsesConfiguration(this);
+        raritiesConfiguration = new RaritiesConfiguration(this);
         cratesConfiguration = new CratesConfiguration(this);
         keysConfiguration = new KeysConfiguration(this);
+        responsesConfiguration = new ResponsesConfiguration(this);
 
         try {
 
@@ -68,6 +68,7 @@ public final class VCrates extends JavaPlugin {
 
         actionParser = new ActionParser(this);
 
+        rarityManager = new RarityManager(this);
         crateManager = new CrateManager(this);
         keyManager = new KeyManager(this);
 
@@ -104,8 +105,8 @@ public final class VCrates extends JavaPlugin {
         return mainConfiguration;
     }
 
-    public ResponsesConfiguration getResponsesConfiguration() {
-        return responsesConfiguration;
+    public RaritiesConfiguration getRaritiesConfiguration() {
+        return raritiesConfiguration;
     }
 
     public CratesConfiguration getCratesConfiguration() {
@@ -116,8 +117,16 @@ public final class VCrates extends JavaPlugin {
         return keysConfiguration;
     }
 
+    public ResponsesConfiguration getResponsesConfiguration() {
+        return responsesConfiguration;
+    }
+
     public ActionParser getActionParser() {
         return actionParser;
+    }
+
+    public RarityManager getRarityManager() {
+        return rarityManager;
     }
 
     public CrateManager getCrateManager() {

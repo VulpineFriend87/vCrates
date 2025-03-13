@@ -6,6 +6,7 @@ import org.bukkit.Particle;
 import org.bukkit.configuration.ConfigurationSection;
 import pro.vulpine.vCrates.VCrates;
 import pro.vulpine.vCrates.configuration.CratesConfiguration;
+import pro.vulpine.vCrates.instance.Rarity;
 import pro.vulpine.vCrates.instance.crate.*;
 import pro.vulpine.vCrates.instance.milestone.Milestone;
 import pro.vulpine.vCrates.instance.milestone.MilestoneRepeats;
@@ -122,6 +123,11 @@ public class CrateManager {
                     Material rewardDisplayItem = Material.getMaterial(rewardSection.getString("display_item").toUpperCase());
                     if (rewardDisplayItem == null) {
                         Logger.warn("Display item " + rewardSection.getString("display_item") + " is not a valid material, skipping.", "CrateManager");
+                        continue;
+                    }
+                    Rarity rewardRarity = plugin.getRarityManager().getRarity(rewardSection.getString("rarity"));
+                    if (rewardRarity == null) {
+                        Logger.warn("Rarity " + rewardSection.getString("rarity") + " is not a valid rarity, skipping.", "CrateManager");
                         continue;
                     }
 
