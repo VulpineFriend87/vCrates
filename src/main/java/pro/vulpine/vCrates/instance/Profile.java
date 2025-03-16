@@ -2,6 +2,7 @@ package pro.vulpine.vCrates.instance;
 
 import pro.vulpine.vCrates.manager.ProfileManager;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -185,6 +186,25 @@ public class Profile {
         }
 
         return null;
+
+    }
+
+    public Integer getTotalStatistic(String type) {
+
+        return statistics.stream()
+                .filter(entry -> entry.getType().equals(type))
+                .map(StatisticEntry::getValue)
+                .reduce(0, Integer::sum);
+
+    }
+
+    public String getTopStatisticIdentifier(String type) {
+
+        return statistics.stream()
+                .filter(entry -> entry.getType().equals(type))
+                .max(Comparator.comparing(StatisticEntry::getValue))
+                .map(StatisticEntry::getIdentifier)
+                .orElse(null);
 
     }
 

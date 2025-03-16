@@ -266,7 +266,7 @@ public class ProfileManager {
 
         String query = "INSERT INTO profiles (owner) VALUES (?)";
 
-        CompletableFuture<Integer> updateFuture = plugin.getStorageManager().executeUpdate(query, owner.toString());
+        CompletableFuture<Integer> updateFuture = plugin.getStorageManager().executeUpdate(query, true, owner.toString());
 
         if (loadAfter) {
             updateFuture.thenRun(() -> {
@@ -306,6 +306,81 @@ public class ProfileManager {
                 .thenRun(() -> Logger.info("Updated profile for " + profile.getOwner(), "ProfileManager"));
     }
 
+    public CompletableFuture<Integer> getTotalStatistic(String type) {
+
+        String query = "SELECT SUM(stat_value) AS total FROM `statistics` WHERE type = ?";
+
+        return plugin.getStorageManager().executeQuery(query, type).thenApply(rs -> {
+
+            try {
+
+                if (rs != null && rs.next()) {
+
+                    return rs.getInt("total");
+
+                }
+
+            } catch (SQLException e) {
+
+                Logger.error("Error while getting total statistic for type " + type + ": " + e.getMessage(), "ProfileManager");
+
+            } finally {
+
+                try {
+
+                    plugin.getStorageManager().closeResources(rs, rs.getStatement(), rs.getStatement().getConnection());
+
+                } catch (SQLException e) {
+
+                    Logger.error("Error while closing resources for total statistic query: " + e.getMessage(), "ProfileManager");
+
+                }
+
+            }
+
+            return 0;
+
+        });
+
+    }
+
+    public CompletableFuture<String> getTopStatisticIdentifier(String type) {
+
+        String query = "SELECT identifier FROM `statistics` WHERE type = ? ORDER BY stat_value DESC LIMIT 1";
+
+        return plugin.getStorageManager().executeQuery(query, type).thenApply(rs -> {
+
+            try {
+
+                if (rs != null && rs.next()) {
+
+                    return rs.getString("identifier");
+
+                }
+
+            } catch (SQLException e) {
+
+                Logger.error("Error while getting top statistic identifier for type " + type + ": " + e.getMessage(), "ProfileManager");
+
+            } finally {
+
+                try {
+
+                    plugin.getStorageManager().closeResources(rs, rs.getStatement(), rs.getStatement().getConnection());
+
+                } catch (SQLException e) {
+
+                    Logger.error("Error while closing resources for top statistic query: " + e.getMessage(), "ProfileManager");
+
+                }
+
+            }
+
+            return null;
+
+        });
+
+    }
 
     public Profile getProfile(UUID owner) {
 
