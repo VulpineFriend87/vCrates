@@ -136,9 +136,23 @@ public class Crate {
         for (Reward reward : rewards) {
             Rarity rarity = reward.getRarity();
             if (rarity != null) {
-                totalWeight += rarity.getWeight();
                 rarityRewardMap.computeIfAbsent(rarity, k -> new ArrayList<>()).add(reward);
             }
+        }
+
+        for (Rarity rarity : rarityRewardMap.keySet()) {
+
+            totalWeight = totalWeight + rarity.getWeight();
+
+        }
+
+        if (totalWeight <= 0) {
+
+            player.sendMessage(Colorize.color(
+                    crateManager.getPlugin().getResponsesConfiguration().getString("no_rewards")
+            ));
+
+            return;
         }
 
         Random random = new Random();
@@ -148,19 +162,40 @@ public class Crate {
         Rarity selectedRarity = null;
             profile.useKey(crateKeys.getAllowedKeys());
 
-        for (Map.Entry<Rarity, List<Reward>> entry : rarityRewardMap.entrySet()) {
-            currentWeight += entry.getKey().getWeight();
+        for (Rarity rarity : rarityRewardMap.keySet()) {
+
+            currentWeight = currentWeight + rarity.getWeight();
+
             if (randomValue < currentWeight) {
-                selectedRarity = entry.getKey();
+
+                selectedRarity = rarity;
                 break;
+
             }
+
         }
 
         Reward selectedReward = null;
 
         if (selectedRarity != null) {
-            List<Reward> selectedRarityRewards = rarityRewardMap.get(selectedRarity);
-            selectedReward = selectedRarityRewards.get(random.nextInt(selectedRarityRewards.size()));
+            List<Reward> rewardsForRarity = rarityRewardMap.get(selectedRarity);
+
+            if (!rewardsForRarity.isEmpty()) {
+
+                selectedReward = rewardsForRarity.get(random.nextInt(rewardsForRarity.size()));
+
+            }
+
+        }
+
+        if (selectedReward == null) {
+
+            player.sendMessage(Colorize.color(
+                    crateManager.getPlugin().getResponsesConfiguration().getString("error")
+            ));
+
+            return;
+
         }
 
         // OPENING
