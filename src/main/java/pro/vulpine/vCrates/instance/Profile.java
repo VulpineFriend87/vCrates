@@ -53,21 +53,21 @@ public class Profile {
 
     }
 
-    public void useKey(List<String> identifiers) {
-
-        boolean used = false;
+    public String useKey(List<String> identifiers) {
 
         for (String identifier : identifiers) {
 
-            if (hasKey(identifier) && !used) {
+            if (hasKey(identifier)) {
 
                 useKey(identifier);
 
-                used = true;
+                return identifier;
 
             }
 
         }
+
+        return null;
 
     }
 
