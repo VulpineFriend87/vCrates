@@ -116,15 +116,17 @@ public class Crate {
 
             ItemStack key = player.getInventory().getItemInMainHand();
 
-            profile.incrementStatistic("keys-used", KeyUtils.getKeyIdentifier(key));
+            profile.incrementStatistic("keys-used", KeyUtils.getKeyIdentifier(key), false);
 
             player.getInventory().getItemInMainHand().setAmount(key.getAmount() - 1);
 
         } else {
 
-            String identifier = profile.useKey(crateKeys.getAllowedKeys());
+            String identifier = crateKeys.getAllowedKeys().stream().findFirst().orElse(null);
 
-            profile.incrementStatistic("keys-used", identifier);
+            profile.useKey(identifier, false);
+
+            profile.incrementStatistic("keys-used", identifier, false);
 
         }
 
@@ -160,7 +162,6 @@ public class Crate {
 
         int currentWeight = 0;
         Rarity selectedRarity = null;
-            profile.useKey(crateKeys.getAllowedKeys());
 
         for (Rarity rarity : rarityRewardMap.keySet()) {
 
@@ -206,9 +207,11 @@ public class Crate {
             player.getInventory().addItem(RewardItem.toItemStack(item));
         }
 
-        profile.incrementStatistic("crates-opened", identifier);
+        profile.incrementStatistic("crates-opened", identifier, false);
 
         crateManager.getPlugin().getActionParser().executeActions(selectedReward.getActions(), player, 0, placeholders);
+
+        profile.update();
 
         for (Milestone milestone : milestones) {
 

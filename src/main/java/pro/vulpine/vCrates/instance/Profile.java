@@ -24,51 +24,33 @@ public class Profile {
         this.statistics = statistics;
     }
 
-    public CompletableFuture<Void> updateKey(String identifier, int amount) {
+    public CompletableFuture<Void> updateKey(String identifier, int amount, boolean updateProfile) {
 
         keys.put(identifier, amount);
 
-        return profileManager.getPlugin().getProfileManager().updateProfile(this);
+        return updateProfile ? update() : CompletableFuture.completedFuture(null);
 
     }
 
-    public CompletableFuture<Void> giveKey(String identifier, int amount) {
+    public CompletableFuture<Void> giveKey(String identifier, int amount, boolean updateProfile) {
 
         keys.put(identifier, keys.getOrDefault(identifier, 0) + amount);
 
-        return profileManager.getPlugin().getProfileManager().updateProfile(this);
+        return updateProfile ? update() : CompletableFuture.completedFuture(null);
 
     }
 
-    public CompletableFuture<Void> takeKey(String identifier, int amount) {
+    public CompletableFuture<Void> takeKey(String identifier, int amount, boolean updateProfile) {
 
         keys.put(identifier, keys.getOrDefault(identifier, 0) - amount);
 
-        return profileManager.getPlugin().getProfileManager().updateProfile(this);
+        return updateProfile ? update() : CompletableFuture.completedFuture(null);
 
     }
 
-    public void useKey(String identifier) {
+    public CompletableFuture<Void> useKey(String identifier, boolean updateProfile) {
 
-        takeKey(identifier, 1);
-
-    }
-
-    public String useKey(List<String> identifiers) {
-
-        for (String identifier : identifiers) {
-
-            if (hasKey(identifier)) {
-
-                useKey(identifier);
-
-                return identifier;
-
-            }
-
-        }
-
-        return null;
+        return takeKey(identifier, 1, updateProfile);
 
     }
 
@@ -100,14 +82,15 @@ public class Profile {
 
     }
 
-    public void setStatistic(String type, String identifier, int value) {
+    public CompletableFuture<Void> setStatistic(String type, String identifier, int value, boolean updateProfile) {
 
         for (StatisticEntry entry : statistics) {
 
             if (entry.getType().equals(type) && entry.getIdentifier().equals(identifier)) {
 
                 entry.setValue(value);
-                return;
+
+                return updateProfile ? update() : CompletableFuture.completedFuture(null);
 
             }
 
@@ -115,17 +98,19 @@ public class Profile {
 
         statistics.add(new StatisticEntry(type, identifier, value));
 
+        return updateProfile ? update() : CompletableFuture.completedFuture(null);
+
     }
 
-    public void incrementStatistic(StatisticEntry entry) {
+    public CompletableFuture<Void> incrementStatistic(StatisticEntry entry, boolean updateProfile) {
 
         entry.setValue(entry.getValue() + 1);
 
-        profileManager.getPlugin().getProfileManager().updateProfile(this);
+        return updateProfile ? update() : CompletableFuture.completedFuture(null);
 
     }
 
-    public void incrementStatistic(String type, String identifier) {
+    public CompletableFuture<Void> incrementStatistic(String type, String identifier, boolean updateProfile) {
 
         for (StatisticEntry entry : statistics) {
 
@@ -133,8 +118,7 @@ public class Profile {
 
                 entry.setValue(entry.getValue() + 1);
 
-                profileManager.getPlugin().getProfileManager().updateProfile(this);
-                return;
+                return updateProfile ? update() : CompletableFuture.completedFuture(null);
 
             }
 
@@ -142,7 +126,7 @@ public class Profile {
 
         statistics.add(new StatisticEntry(type, identifier, 1));
 
-        profileManager.getPlugin().getProfileManager().updateProfile(this);
+        return updateProfile ? update() : CompletableFuture.completedFuture(null);
 
     }
 
@@ -171,6 +155,10 @@ public class Profile {
 
         profileManager.getPlugin().getProfileManager().updateProfile(this);
 
+    }
+
+    public CompletableFuture<Void> update() {
+        return profileManager.getPlugin().getProfileManager().updateProfile(this);
     }
 
     public Integer getStatistic(String type, String identifier) {

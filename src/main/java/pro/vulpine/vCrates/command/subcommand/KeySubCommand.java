@@ -299,12 +299,12 @@ public class KeySubCommand implements SubCommand {
 
                     if (action.equalsIgnoreCase("give")) {
 
-                        return profile.giveKey(identifier, finalAmount)
+                        return profile.giveKey(identifier, finalAmount, true)
                                 .thenApply(v -> profile);
 
                     } else {
 
-                        return profile.takeKey(identifier, finalAmount)
+                        return profile.takeKey(identifier, finalAmount, true)
                                 .thenApply(v -> profile);
 
                     }
