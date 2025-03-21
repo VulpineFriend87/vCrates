@@ -384,6 +384,98 @@ public class ProfileManager {
 
     }
 
+    public CompletableFuture<List<Map.Entry<UUID, Integer>>> getLeaderboard(String statisticType) {
+
+        String query = "SELECT owner, SUM(stat_value) as total FROM `statistics` WHERE type = ? GROUP BY owner ORDER BY total DESC";
+
+        return plugin.getStorageManager().executeQuery(query, statisticType).thenApply(rs -> {
+
+            List<Map.Entry<UUID, Integer>> result = new ArrayList<>();
+
+            try {
+
+                if (rs != null) {
+
+                    while (rs.next()) {
+
+                        UUID playerId = UUID.fromString(rs.getString("owner"));
+                        int value = rs.getInt("total");
+                        result.add(new AbstractMap.SimpleEntry<>(playerId, value));
+
+                    }
+
+                }
+
+            } catch (SQLException e) {
+
+                Logger.error("Error while getting leaderboard for type " + statisticType + ": " + e.getMessage(), "ProfileManager");
+
+            } finally {
+
+                try {
+
+                    plugin.getStorageManager().closeResources(rs, rs.getStatement(), rs.getStatement().getConnection());
+
+                } catch (SQLException e) {
+
+                    Logger.error("Error while closing resources for leaderboard query: " + e.getMessage(), "ProfileManager");
+
+                }
+
+            }
+
+            return result;
+
+        });
+
+    }
+
+    public CompletableFuture<List<Map.Entry<UUID, Integer>>> getLeaderboard(String statisticType, String identifier) {
+
+        String query = "SELECT owner, stat_value FROM `statistics` WHERE type = ? AND identifier = ? ORDER BY stat_value DESC";
+
+        return plugin.getStorageManager().executeQuery(query, statisticType, identifier).thenApply(rs -> {
+
+            List<Map.Entry<UUID, Integer>> result = new ArrayList<>();
+
+            try {
+
+                if (rs != null) {
+
+                    while (rs.next()) {
+
+                        UUID playerId = UUID.fromString(rs.getString("owner"));
+                        int value = rs.getInt("stat_value");
+                        result.add(new AbstractMap.SimpleEntry<>(playerId, value));
+
+                    }
+
+                }
+
+            } catch (SQLException e) {
+
+                Logger.error("Error while getting leaderboard for type " + statisticType + " and identifier " + identifier + ": " + e.getMessage(), "ProfileManager");
+
+            } finally {
+
+                try {
+
+                    plugin.getStorageManager().closeResources(rs, rs.getStatement(), rs.getStatement().getConnection());
+
+                } catch (SQLException e) {
+
+                    Logger.error("Error while closing resources for leaderboard query: " + e.getMessage(), "ProfileManager");
+
+                }
+
+            }
+
+            return result;
+
+        });
+
+    }
+
     public Profile getProfile(UUID owner) {
 
         for (Profile profile : profiles) {

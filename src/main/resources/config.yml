@@ -15,6 +15,12 @@ storage:
   username: vcrates
   password: vcrates
 
+# Placeholders
+placeholders:
+  leaderboard:
+    entry: "&7%rank%° &9%player% &7- &9%value%"
+    empty: "&7-° &9--- &7- &9---"
+
 # Logging
 # Possible values: INFO, WARN, ERROR
 # INFO: Logs everything
