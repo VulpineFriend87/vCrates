@@ -112,22 +112,26 @@ public class Crate {
             return;
         }
 
-        if (!usedVirtualKey) {
+        int worstCaseSlots = 0;
 
-            ItemStack key = player.getInventory().getItemInMainHand();
+        for (Reward reward : rewards) {
 
-            profile.incrementStatistic("keys-used", KeyUtils.getKeyIdentifier(key), false);
+            int requiredSlots = reward.getItems().size();
+            worstCaseSlots = Math.max(worstCaseSlots, requiredSlots);
 
-            player.getInventory().getItemInMainHand().setAmount(key.getAmount() - 1);
+        }
 
-        } else {
+        int freeSlots = (int) Arrays.stream(player.getInventory().getStorageContents())
+                .filter(Objects::isNull).count();
 
-            String identifier = crateKeys.getAllowedKeys().stream().findFirst().orElse(null);
+        if (freeSlots < worstCaseSlots) {
 
-            profile.useKey(identifier, false);
+            crateManager.getPlugin().getActionParser().executeActions(
+                    crateManager.getPlugin().getResponsesConfiguration().getStringList("crates.not_enough_space"),
+                    player, 0, placeholders
+            );
 
-            profile.incrementStatistic("keys-used", identifier, false);
-
+            return;
         }
 
         // REWARD SELECTION
@@ -199,12 +203,32 @@ public class Crate {
 
         }
 
+        if (!usedVirtualKey) {
+
+            ItemStack key = player.getInventory().getItemInMainHand();
+
+            profile.incrementStatistic("keys-used", KeyUtils.getKeyIdentifier(key), false);
+
+            player.getInventory().getItemInMainHand().setAmount(key.getAmount() - 1);
+
+        } else {
+
+            String identifier = crateKeys.getAllowedKeys().stream().findFirst().orElse(null);
+
+            profile.useKey(identifier, false);
+
+            profile.incrementStatistic("keys-used", identifier, false);
+
+        }
+
         // OPENING
 
         placeholders.put("%reward%", selectedReward.getName());
 
         for (RewardItem item : selectedReward.getItems()) {
+
             player.getInventory().addItem(RewardItem.toItemStack(item));
+
         }
 
         profile.incrementStatistic("crates-opened", identifier, false);

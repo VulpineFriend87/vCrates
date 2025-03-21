@@ -27,6 +27,10 @@ crates:
   cooldown: # List of actions (see Action template above)
     - "[TITLE] player; &c&lERROR!; &7Wait %cooldown%s and try again."
     - "[SOUND] player; ENTITY_VILLAGER_NO"
+  not_enough_space: # List of actions (see Action template above)
+    - "[TITLE] player; &c&lERROR!; &7Your inventory does not have enough space."
+    - "[SOUND] player; ENTITY_VILLAGER_NO"
+
 keys:
   missing: # List of actions (see Action template above)
     - "[TITLE] player; &c&lERROR!; &7You don't have the required key."
