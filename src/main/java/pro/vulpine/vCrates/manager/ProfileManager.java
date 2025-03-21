@@ -266,15 +266,17 @@ public class ProfileManager {
 
         String query = "INSERT INTO profiles (owner) VALUES (?)";
 
-        CompletableFuture<Integer> updateFuture = plugin.getStorageManager().executeUpdate(query, true, owner.toString());
+        plugin.getStorageManager().executeUpdate(query, owner.toString()).thenRun(() -> {
 
-        if (loadAfter) {
-            updateFuture.thenRun(() -> {
+            Logger.info("Created profile for " + owner, "ProfileManager");
+
+            if (loadAfter) {
+
                 loadProfile(owner, false);
-            });
-        }
 
-        Logger.info("Created profile for " + owner, "ProfileManager");
+            }
+
+        });
     }
 
 
