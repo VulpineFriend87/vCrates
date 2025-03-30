@@ -1,5 +1,11 @@
 package pro.vulpine.vCrates.instance.crate;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.meta.ItemMeta;
+import pro.vulpine.vCrates.instance.CrateHolder;
 import pro.vulpine.vCrates.utils.Colorize;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -26,12 +32,13 @@ public class Crate {
     private final String identifier;
     private final String name;
     private final int cooldown;
+    private final boolean preview;
     private final List<Location> blocks;
     private final List<Milestone> milestones;
     private final List<Reward> rewards;
     private final Map<UUID, Long> cooldowns;
 
-    public Crate(CrateManager crateManager, CrateKeys crateKeys, CratePushback cratePushback, CrateEffect crateEffect, CrateHologram crateHologram, String identifier, String name, int cooldown, List<Location> blocks, List<Milestone> milestones, List<Reward> rewards) {
+    public Crate(CrateManager crateManager, CrateKeys crateKeys, CratePushback cratePushback, CrateEffect crateEffect, CrateHologram crateHologram, String identifier, String name, int cooldown, boolean preview, List<Location> blocks, List<Milestone> milestones, List<Reward> rewards) {
         this.crateManager = crateManager;
 
         this.crateKeys = crateKeys;
@@ -42,6 +49,7 @@ public class Crate {
         this.identifier = identifier;
         this.name = name;
         this.cooldown = cooldown;
+        this.preview = preview;
         this.blocks = blocks;
         this.milestones = milestones;
         this.rewards = rewards;
@@ -217,7 +225,7 @@ public class Crate {
 
                 String identifier = crateKeys.getAllowedKeys().stream().findFirst().orElse(null);
 
-            profile.useKey(identifier, false);
+                profile.useKey(identifier, false);
 
                 profile.incrementStatistic("keys-used", identifier, false);
 
@@ -278,6 +286,199 @@ public class Crate {
 
     }
 
+    public void preview(Player player, int page) {
+
+        if (!preview) {
+            return;
+        }
+
+        Profile profile = crateManager.getPlugin().getProfileManager().getProfile(player.getUniqueId());
+
+        if (profile == null) {
+
+            player.sendMessage(Colorize.color(
+                    crateManager.getPlugin().getResponsesConfiguration().getString("no_profile")
+            ));
+
+            return;
+        }
+
+        int totalWeight = 0;
+        Map<Rarity, List<Reward>> rarityRewardMap = new HashMap<>();
+
+        for (Reward reward : rewards) {
+            Rarity rarity = reward.getRarity();
+            if (rarity != null) {
+                rarityRewardMap.computeIfAbsent(rarity, k -> new ArrayList<>()).add(reward);
+                totalWeight = totalWeight + rarity.getWeight();
+            }
+        }
+
+        ConfigurationSection previewSection = crateManager.getPlugin().getMainConfiguration().getConfigurationSection("gui.preview");
+
+        List<Integer> rewardSlots = previewSection.getIntegerList("content.reward.slots");
+
+        List<ItemStack> items = new ArrayList<>();
+        for (Reward reward : rewards) {
+
+            ItemStack item = new ItemStack(reward.getDisplayItem());
+
+            ItemMeta meta = item.getItemMeta();
+            if (meta != null) {
+
+                List<String> lore = new ArrayList<>(reward.getLore());
+
+                double chance = (totalWeight > 0) ? (reward.getRarity().getWeight() * 100.0 / totalWeight) : 0;
+
+                List<String> loreAppend = previewSection.getStringList("content.reward.lore_append");
+                for (String line : loreAppend) {
+
+                    lore.add(Colorize.color(line
+                            .replace("%rarity%", reward.getRarity().getName())
+                            .replace("%chance%", String.format("%.2f", chance))
+                    ));
+
+                }
+
+                meta.setDisplayName(Colorize.color(reward.getName()));
+                meta.setLore(Colorize.color(lore));
+
+            }
+
+            item.setItemMeta(meta);
+
+            items.add(item);
+
+        }
+
+        int pageSize = rewardSlots.size();
+        int totalPages = (int) Math.ceil((double) items.size() / pageSize);
+
+        String title = previewSection.getString("title")
+                .replace("%page%", String.valueOf(page + 1))
+                .replace("%crate%", name)
+                .replace("%total_pages%", String.valueOf(totalPages));
+
+        int size = previewSection.getInt("size");
+
+        Inventory gui = Bukkit.createInventory(new CrateHolder(this, "crate_preview", page, totalPages), size, Colorize.color("&8" + title));
+
+        List<?> otherItems = previewSection.getList("content.other");
+        if (otherItems != null) {
+
+            for (Object otherItem : otherItems) {
+
+                if (otherItem instanceof Map) {
+
+                    Map<?, ?> itemMap = (Map<?, ?>) otherItem;
+
+                    String type = (String) itemMap.get("type");
+                    String name = (String) itemMap.get("name");
+                    List<String> lore = (List<String>) itemMap.get("lore");
+                    List<Integer> slots = (List<Integer>) itemMap.get("slots");
+
+                    ItemStack item = new ItemStack(Material.valueOf(type));
+
+                    ItemMeta meta = item.getItemMeta();
+                    if (meta != null) {
+
+                        meta.setDisplayName(Colorize.color(name));
+                        meta.setLore(Colorize.color(lore));
+
+                        item.setItemMeta(meta);
+
+                    }
+
+                    for (int slot : slots) {
+
+                        gui.setItem(slot, item);
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        int startIndex = page * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, items.size());
+
+        for (int i = startIndex, slotIndex = 0; i < endIndex; i++, slotIndex++) {
+
+            gui.setItem(rewardSlots.get(slotIndex), items.get(i));
+
+        }
+
+        ConfigurationSection closeSection = previewSection.getConfigurationSection("content.close");
+        if (closeSection != null) {
+
+            ItemStack close = new ItemStack(Material.valueOf(closeSection.getString("type")));
+
+            ItemMeta meta = close.getItemMeta();
+            if (meta != null) {
+
+                meta.setDisplayName(Colorize.color(closeSection.getString("name")));
+                meta.setLore(Colorize.color(closeSection.getStringList("lore")));
+
+                close.setItemMeta(meta);
+
+            }
+
+            gui.setItem(closeSection.getInt("slot"), close);
+
+        }
+
+        if (page > 0) {
+
+            ConfigurationSection previousPageSection = previewSection.getConfigurationSection("content.previous_page");
+            if (previousPageSection != null) {
+
+                ItemStack previousPageItem = new ItemStack(Material.valueOf(previousPageSection.getString("type")));
+
+                ItemMeta meta = previousPageItem.getItemMeta();
+                if (meta != null) {
+
+                    meta.setDisplayName(Colorize.color(previousPageSection.getString("name")));
+                    meta.setLore(Colorize.color(previousPageSection.getStringList("lore")));
+
+                    previousPageItem.setItemMeta(meta);
+
+                }
+
+                gui.setItem(previousPageSection.getInt("slot"), previousPageItem);
+
+            }
+
+        }
+
+        if (page < totalPages - 1) {
+
+            ConfigurationSection nextPageSection = previewSection.getConfigurationSection("content.next_page");
+            if (nextPageSection != null) {
+
+                ItemStack nextPageItem = new ItemStack(Material.valueOf(nextPageSection.getString("type")));
+
+                ItemMeta meta = nextPageItem.getItemMeta();
+                if (meta != null) {
+
+                    meta.setDisplayName(Colorize.color(nextPageSection.getString("name")));
+                    meta.setLore(Colorize.color(nextPageSection.getStringList("lore")));
+
+                    nextPageItem.setItemMeta(meta);
+
+                }
+
+                gui.setItem(nextPageSection.getInt("slot"), nextPageItem);
+
+            }
+
+        }
+
+        player.openInventory(gui);
+
+    }
+
     private double getRemainingCooldown(Player player) {
 
         if (cooldowns.containsKey(player.getUniqueId())) {
@@ -334,6 +535,10 @@ public class Crate {
 
     public long getCooldown() {
         return cooldown;
+    }
+
+    public boolean isPreview() {
+        return preview;
     }
 
     public List<Location> getBlocks() {

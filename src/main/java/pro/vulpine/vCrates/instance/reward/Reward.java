@@ -9,14 +9,16 @@ public class Reward {
 
     private final String identifier;
     private final String name;
+    private final List<String> lore;
     private final Material displayItem;
     private final Rarity rarity;
     private final List<RewardItem> items;
     private final List<String> actions;
 
-    public Reward(String identifier, String name, Material displayItem, Rarity rarity, List<RewardItem> items, List<String> actions) {
+    public Reward(String identifier, String name, List<String> lore, Material displayItem, Rarity rarity, List<RewardItem> items, List<String> actions) {
         this.identifier = identifier;
         this.name = name;
+        this.lore = lore;
         this.displayItem = displayItem;
         this.rarity = rarity;
         this.items = items;
@@ -29,6 +31,10 @@ public class Reward {
 
     public String getName() {
         return name;
+    }
+
+    public List<String> getLore() {
+        return lore;
     }
 
     public Material getDisplayItem() {

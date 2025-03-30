@@ -61,6 +61,7 @@ public class CrateManager {
 
             String name = crateSection.getString("name");
             int cooldown = crateSection.getInt("cooldown");
+            boolean preview = crateSection.getBoolean("preview", true);
 
             boolean crateKeysRequired = crateSection.getBoolean("keys.required", true);
             List<String> crateKeysAllowed = crateSection.getStringList("keys.allowed");
@@ -120,11 +121,14 @@ public class CrateManager {
                     }
 
                     String rewardName = rewardSection.getString("name");
+                    List<String> rewardLore = rewardSection.getStringList("lore");
+
                     Material rewardDisplayItem = Material.getMaterial(rewardSection.getString("display_item").toUpperCase());
                     if (rewardDisplayItem == null) {
                         Logger.warn("Display item " + rewardSection.getString("display_item") + " is not a valid material, skipping.", "CrateManager");
                         continue;
                     }
+
                     Rarity rewardRarity = plugin.getRarityManager().getRarity(rewardSection.getString("rarity"));
                     if (rewardRarity == null) {
                         Logger.warn("Rarity " + rewardSection.getString("rarity") + " is not a valid rarity, skipping.", "CrateManager");
@@ -156,7 +160,7 @@ public class CrateManager {
 
                     List<String> rewardActions = rewardSection.getStringList("actions");
 
-                    rewards.add(new Reward(rewardIdentifier, rewardName, rewardDisplayItem, rewardRarity, rewardItems, rewardActions));
+                    rewards.add(new Reward(rewardIdentifier, rewardName, rewardLore, rewardDisplayItem, rewardRarity, rewardItems, rewardActions));
 
                 }
 
@@ -217,7 +221,7 @@ public class CrateManager {
                 }
             }
 
-            Crate crate = new Crate(this, crateKeys, cratePushback, crateEffect, crateHologram, identifier, name, cooldown, blocks, milestones, rewards);
+            Crate crate = new Crate(this, crateKeys, cratePushback, crateEffect, crateHologram, identifier, name, cooldown, preview, blocks, milestones, rewards);
 
             crate.getCrateEffect().setCrate(crate);
 

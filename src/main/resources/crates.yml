@@ -7,6 +7,7 @@
 #   blocks: [] # List of blocks that can be opened by the crate (format: "world,x,y,z")
 #   name: "&9&lEXAMPLE CRATE" # Name of the crate
 #   cooldown: 5000 # Per player cooldown in milliseconds (1s = 1000ms) (0 = disabled)
+#   preview: true # Can the crate be previewed?
 #   keys:
 #     required: true # Is a key required to open the crate?
 #     allowed: [] # List of key identifiers that are allowed to open the crate

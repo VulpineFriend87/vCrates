@@ -19,7 +19,40 @@ storage:
 placeholders:
   leaderboard:
     entry: "&7%rank%° &9%player% &7- &9%value%"
-    empty: "&7-° &9--- &7- &9---"
+    empty: "&7%rank%° &9--- &7- &9---"
+
+
+gui:
+  preview:
+    title: "%crate% &7(%page%/%total_pages%)" # Placeholders: %crate%, %page%, %total_pages%
+    size: 45 # Must be a multiple of 9
+    content:
+      reward:
+        slots: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35]
+        lore_append: # Appends to the reward lore
+          - ""
+          - "&7Rarity: &3%rarity%"
+          - "&7Chance: &3%chance%%"
+      close:
+        name: "&cClose"
+        lore: []
+        type: RED_STAINED_GLASS_PANE
+        slot: 40
+      previous_page:
+        name: "&7Previous Page"
+        lore: []
+        type: GRAY_STAINED_GLASS_PANE
+        slot: 36
+      next_page:
+        name: "&7Next Page"
+        lore: []
+        type: GRAY_STAINED_GLASS_PANE
+        slot: 44
+      other:
+        - name: "&r"
+          lore: []
+          type: CYAN_STAINED_GLASS_PANE
+          slots: [36, 37, 38, 39, 40, 41, 42, 43, 44]
 
 # Logging
 # Possible values: INFO, WARN, ERROR
