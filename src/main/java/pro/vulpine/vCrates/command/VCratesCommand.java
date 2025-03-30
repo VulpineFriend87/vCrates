@@ -49,7 +49,7 @@ public class VCratesCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage(Colorize.color(
                     "&r\n&7 This server is running\n&r\n&3 v&bCrates &7[v" + plugin.getDescription().getVersion() + "] " +
                     "\n&7 By " + String.join(", ", plugin.getDescription().getAuthors()) +
-                    "\n&r\n&7 Use &b/vcrates help &7for a command list.\n&r"
+                    "\n&r"
             ));
             return;
         }
