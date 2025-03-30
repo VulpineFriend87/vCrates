@@ -203,21 +203,25 @@ public class Crate {
 
         }
 
-        if (!usedVirtualKey) {
+        if (usedVirtualKey != null) {
 
-            ItemStack key = player.getInventory().getItemInMainHand();
+            if (!usedVirtualKey) {
 
-            profile.incrementStatistic("keys-used", KeyUtils.getKeyIdentifier(key), false);
+                ItemStack key = player.getInventory().getItemInMainHand();
 
-            player.getInventory().getItemInMainHand().setAmount(key.getAmount() - 1);
+                profile.incrementStatistic("keys-used", KeyUtils.getKeyIdentifier(key), false);
 
-        } else {
+                player.getInventory().getItemInMainHand().setAmount(key.getAmount() - 1);
 
-            String identifier = crateKeys.getAllowedKeys().stream().findFirst().orElse(null);
+            } else {
+
+                String identifier = crateKeys.getAllowedKeys().stream().findFirst().orElse(null);
 
             profile.useKey(identifier, false);
 
-            profile.incrementStatistic("keys-used", identifier, false);
+                profile.incrementStatistic("keys-used", identifier, false);
+
+            }
 
         }
 
