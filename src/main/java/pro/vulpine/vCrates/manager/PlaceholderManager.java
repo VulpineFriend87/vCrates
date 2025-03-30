@@ -74,12 +74,6 @@ public class PlaceholderManager extends PlaceholderExpansion {
 
         }
 
-        if (identifier.equals("total_keys_used")) {
-
-            return String.valueOf(profile.getTotalStatistic("keys-used"));
-
-        }
-
         if (identifier.startsWith("crates_opened_")) {
 
             String crateIdentifier = identifier.replace("crates_opened_", "");
