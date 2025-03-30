@@ -21,6 +21,8 @@ help:
     - ""
     - "&7 - &3/vcrates help &7- Show this message."
     - "&7 - &3/vcrates key &8[&bhelp&8] &7- Show key commands."
+    - "&7 - &3/vcrates balance &7- Show your virtual keys balance."
+    - "&7 - &3/vcrates reload &7- Reload the plugin."
     - ""
 
 crates:

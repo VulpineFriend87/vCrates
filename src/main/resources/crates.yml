@@ -17,7 +17,7 @@
 #     multiply: -1.25 # Multiply the pushback by this amount
 #   effect: # Displays an effect when the crate is opened
 #     enabled: true # Is effect enabled?
-#     type: HELIX # Available types: HELIX, SPIRAL, VORTEX, WAVE, RING, AURA, CIRCLE, SQUARE
+#     type: HELIX # Available types: HELIX, SPIRAL, VORTEX, RING, AURA, CIRCLE, SQUARE, AROUND
 #     particle: CRIT # Particle of the effect
 #     radius: 1 # Radius of the effect
 #     speed: 1 # Speed of the effect in seconds
@@ -46,6 +46,8 @@
 #   rewards: # List of rewards
 #     example: # Reward identifier
 #       name: "&9&lEXAMPLE REWARD" # Display name of the reward (used in placeholders)
+#       lore:
+#         - "&7This is an example reward"
 #       display_item: DIAMOND_BLOCK # Display item of the reward
 #       rarity: common # Rarity of the reward (rarities.yml)
 #       items: # List of items that will be given to the player when they win this reward
