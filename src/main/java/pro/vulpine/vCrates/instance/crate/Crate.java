@@ -321,12 +321,12 @@ public class Crate {
         List<ItemStack> items = new ArrayList<>();
         for (Reward reward : rewards) {
 
-            ItemStack item = new ItemStack(reward.getDisplayItem());
+            ItemStack item = new ItemStack(reward.getRewardDisplayItem().getType(), reward.getRewardDisplayItem().getAmount());
 
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
 
-                List<String> lore = new ArrayList<>(reward.getLore());
+                List<String> lore = new ArrayList<>(reward.getRewardDisplayItem().getLore());
 
                 double chance = (totalWeight > 0) ? (reward.getRarity().getWeight() * 100.0 / totalWeight) : 0;
 

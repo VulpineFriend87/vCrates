@@ -12,6 +12,7 @@ import pro.vulpine.vCrates.instance.milestone.Milestone;
 import pro.vulpine.vCrates.instance.milestone.MilestoneRepeats;
 import pro.vulpine.vCrates.instance.milestone.MilestoneReward;
 import pro.vulpine.vCrates.instance.reward.Reward;
+import pro.vulpine.vCrates.instance.reward.RewardDisplayItem;
 import pro.vulpine.vCrates.instance.reward.RewardItem;
 import pro.vulpine.vCrates.utils.logger.Logger;
 
@@ -121,19 +122,28 @@ public class CrateManager {
                     }
 
                     String rewardName = rewardSection.getString("name");
-                    List<String> rewardLore = rewardSection.getStringList("lore");
-
-                    Material rewardDisplayItem = Material.getMaterial(rewardSection.getString("display_item").toUpperCase());
-                    if (rewardDisplayItem == null) {
-                        Logger.warn("Display item " + rewardSection.getString("display_item") + " is not a valid material, skipping.", "CrateManager");
-                        continue;
-                    }
 
                     Rarity rewardRarity = plugin.getRarityManager().getRarity(rewardSection.getString("rarity"));
                     if (rewardRarity == null) {
                         Logger.warn("Rarity " + rewardSection.getString("rarity") + " is not a valid rarity, skipping.", "CrateManager");
                         continue;
                     }
+
+                    // DISPLAY ITEM
+
+                    ConfigurationSection rewardDisplayItemSection = rewardSection.getConfigurationSection("display_item");
+
+                    Material displayItemType = Material.getMaterial(rewardDisplayItemSection.getString("type").toUpperCase());
+                    if (displayItemType == null) {
+                        Logger.warn("Display item type " + rewardDisplayItemSection.getString("type") + " is not a valid material, skipping.", "CrateManager");
+                        continue;
+                    }
+
+                    int displayItemAmount = rewardDisplayItemSection.getInt("amount", 1);
+
+                    List<String> displayItemLore = rewardDisplayItemSection.getStringList("lore");
+
+                    RewardDisplayItem rewardDisplayItem = new RewardDisplayItem(displayItemType, displayItemAmount, displayItemLore);
 
                     // ITEMS
 
@@ -160,7 +170,7 @@ public class CrateManager {
 
                     List<String> rewardActions = rewardSection.getStringList("actions");
 
-                    rewards.add(new Reward(rewardIdentifier, rewardName, rewardLore, rewardDisplayItem, rewardRarity, rewardItems, rewardActions));
+                    rewards.add(new Reward(rewardIdentifier, rewardName, rewardDisplayItem, rewardRarity, rewardItems, rewardActions));
 
                 }
 
