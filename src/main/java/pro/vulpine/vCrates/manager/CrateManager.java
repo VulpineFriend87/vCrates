@@ -98,7 +98,8 @@ public class CrateManager {
             Particle effectParticle = Particle.valueOf(crateSection.getString("effect.particle", "ELECTRIC_SPARK"));
             double effectRadius = crateSection.getDouble("effect.radius", 1);
             double effectSpeed = crateSection.getDouble("effect.speed", 1);
-            CrateEffect crateEffect = new CrateEffect(effectEnabled, effectType, effectParticle, effectRadius, effectSpeed);
+            double effectYOffset = crateSection.getDouble("effect.y_offset", 0);
+            CrateEffect crateEffect = new CrateEffect(effectEnabled, effectType, effectParticle, effectRadius, effectSpeed, effectYOffset);
 
             boolean hologramEnabled = crateSection.getBoolean("hologram.enabled", true);
             List<String> hologramLines = crateSection.getStringList("hologram.lines");
