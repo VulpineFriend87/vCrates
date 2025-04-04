@@ -22,6 +22,7 @@ public class AuraEffect implements Effect {
         Particle particle = crateEffect.getParticle();
         double radius = crateEffect.getRadius();
         double speed = crateEffect.getSpeed();
+        double yOffset = crateEffect.getYOffset();
 
         int phiSteps = 10;
         int thetaSteps = 20;
@@ -35,7 +36,7 @@ public class AuraEffect implements Effect {
                 double theta = 2 * Math.PI * j / thetaSteps;
 
                 double x = radius * Math.sin(phi) * Math.cos(theta);
-                double y = radius * Math.cos(phi);
+                double y = radius * Math.cos(phi) + yOffset;
                 double z = radius * Math.sin(phi) * Math.sin(theta);
 
                 Location loc = base.clone().add(x, y, z);

@@ -23,6 +23,7 @@ public class AroundEffect implements Effect {
         Particle particle = crateEffect.getParticle();
         double radius = crateEffect.getRadius();
         double speed = crateEffect.getSpeed();
+        double yOffset = crateEffect.getYOffset();
 
         long totalTicks = Math.max(1, (long)(speed * 20));
 
@@ -44,7 +45,7 @@ public class AroundEffect implements Effect {
                 double randomRadius = Math.random() * radius;
                 double offsetX = randomRadius * Math.cos(randomAngle);
                 double offsetZ = randomRadius * Math.sin(randomAngle);
-                double offsetY = (Math.random() - 0.5);
+                double offsetY = (Math.random() - 0.5) + yOffset;
 
                 Location loc = base.clone().add(offsetX, offsetY, offsetZ);
 

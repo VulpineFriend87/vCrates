@@ -23,6 +23,7 @@ public class CircleEffect implements Effect {
         Particle particle = crateEffect.getParticle();
         double radius = crateEffect.getRadius();
         double speed = crateEffect.getSpeed();
+        double yOffset = crateEffect.getYOffset();
 
         long totalTicks = Math.max(1, (long)(speed * 20));
 
@@ -45,7 +46,7 @@ public class CircleEffect implements Effect {
                 double x = radius * Math.cos(t);
                 double z = radius * Math.sin(t);
 
-                Location loc = base.clone().add(x, 0, z);
+                Location loc = base.clone().add(x, yOffset, z);
 
                 base.getWorld().spawnParticle(particle, loc, 1, 0, 0, 0, 0);
 

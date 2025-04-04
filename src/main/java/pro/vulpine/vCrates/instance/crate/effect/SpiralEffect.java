@@ -21,6 +21,7 @@ public class SpiralEffect implements Effect {
         Particle particle = crateEffect.getParticle();
         double radius = crateEffect.getRadius();
         double speed = crateEffect.getSpeed();
+        double yOffset = crateEffect.getYOffset();
 
         long totalTicks = Math.max(1, (long)(speed * 20));
         double tIncrement = (Math.PI * 2) / totalTicks;
@@ -42,7 +43,7 @@ public class SpiralEffect implements Effect {
                 double x = radius * Math.cos(t);
                 double z = radius * Math.sin(t);
 
-                Location loc = base.clone().add(x, t / Math.PI, z);
+                Location loc = base.clone().add(x, (t / Math.PI) + yOffset, z);
 
                 base.getWorld().spawnParticle(particle, loc, 1, 0, 0, 0, 0);
 

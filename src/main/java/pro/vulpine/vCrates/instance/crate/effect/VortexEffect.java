@@ -21,6 +21,7 @@ public class VortexEffect implements Effect {
         Particle particle = crateEffect.getParticle();
         double radius = crateEffect.getRadius();
         double speed = crateEffect.getSpeed();
+        double yOffset = crateEffect.getYOffset();
 
         long totalTicks = Math.max(1, (long)(speed * 20));
         double tIncrement = (Math.PI * 2) / totalTicks;
@@ -43,8 +44,8 @@ public class VortexEffect implements Effect {
                 double x = currentRadius * Math.cos(t);
                 double z = currentRadius * Math.sin(t);
 
-                Location loc1 = base.clone().add(x, t / Math.PI, z);
-                Location loc2 = base.clone().add(-x, t / Math.PI, -z);
+                Location loc1 = base.clone().add(x, (t / Math.PI) + yOffset, z);
+                Location loc2 = base.clone().add(-x, (t / Math.PI) + yOffset, -z);
 
                 base.getWorld().spawnParticle(particle, loc1, 1, 0, 0, 0, 0);
                 base.getWorld().spawnParticle(particle, loc2, 1, 0, 0, 0, 0);

@@ -23,6 +23,7 @@ public class RingEffect implements Effect {
         Particle particle = crateEffect.getParticle();
         double radius = crateEffect.getRadius();
         double speed = crateEffect.getSpeed();
+        double yOffset = crateEffect.getYOffset();
 
         long totalTicks = Math.max(1, (long)(speed * 20));
 
@@ -43,7 +44,7 @@ public class RingEffect implements Effect {
                 }
 
                 double x = radius * Math.cos(t);
-                double y = Math.sin(t) * radius;
+                double y = Math.sin(t) * radius + yOffset;
 
                 Location loc = base.clone().add(x, y, 0);
 

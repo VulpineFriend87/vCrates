@@ -23,6 +23,7 @@ public class HelixEffect implements Effect {
         Particle particle = crateEffect.getParticle();
         double radius = crateEffect.getRadius();
         double speed = crateEffect.getSpeed();
+        double yOffset = crateEffect.getYOffset();
 
         long totalTicks = Math.max(1, (long)(speed * 20));
 
@@ -47,8 +48,8 @@ public class HelixEffect implements Effect {
                 double x2 = radius * Math.cos(t + Math.PI);
                 double z2 = radius * Math.sin(t + Math.PI);
 
-                Location loc1 = base.clone().add(x1, t / Math.PI, z1);
-                Location loc2 = base.clone().add(x2, t / Math.PI, z2);
+                Location loc1 = base.clone().add(x1, (t / Math.PI) + yOffset, z1);
+                Location loc2 = base.clone().add(x2, (t / Math.PI) + yOffset, z2);
 
                 base.getWorld().spawnParticle(particle, loc1, 1, 0, 0, 0, 0);
                 base.getWorld().spawnParticle(particle, loc2, 1, 0, 0, 0, 0);

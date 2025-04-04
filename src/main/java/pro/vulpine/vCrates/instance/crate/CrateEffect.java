@@ -66,9 +66,8 @@ public class CrateEffect extends BukkitRunnable {
 
         for (Location block : crate.getBlocks()) {
 
-            block.add(0, yOffset, 0);
-
             effect.play(block);
+
         }
 
     }
