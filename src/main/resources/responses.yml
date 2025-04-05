@@ -71,6 +71,8 @@ keys:
 
   give: "&7[&3v&bCrates&7] &7Gave &3x%amount% &b%key% &7(%identifier%) &7%type% key(s) to &b%player%&7."
   take: "&7[&3v&bCrates&7] &7Took &3x%amount% &b%key% &7(%identifier%) &7%type% key(s) from &b%player%&7."
+  give_all: "&7[&3v&bCrates&7] &7Gave &3x%amount% &b%key% &7(%identifier%) &7%type% key(s) to &3%player_count% &7players."
+  take_all: "&7[&3v&bCrates&7] &7Took &3x%amount% &b%key% &7(%identifier%) &7%type% key(s) from &3%player_count% &7players."
   invalid_identifier: "&7[&3v&bCrates&7] &cInvalid key."
   invalid_type: "&7[&3v&bCrates&7] &cInvalid key type."
   virtual_not_allowed: "&7[&3v&bCrates&7] &cVirtual keys are not allowed for this key."

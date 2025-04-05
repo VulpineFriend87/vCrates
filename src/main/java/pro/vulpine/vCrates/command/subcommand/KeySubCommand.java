@@ -1,5 +1,6 @@
 package pro.vulpine.vCrates.command.subcommand;
 
+import pro.vulpine.vCrates.instance.Profile;
 import pro.vulpine.vCrates.utils.Colorize;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -16,6 +17,7 @@ import pro.vulpine.vCrates.utils.PermissionChecker;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class KeySubCommand implements SubCommand {
 
@@ -53,29 +55,13 @@ public class KeySubCommand implements SubCommand {
 
             String action = args[0];
 
-            if (action.equalsIgnoreCase("give")) {
+            if (!PermissionChecker.hasPermission(sender, "key", action)) {
 
-                if (!PermissionChecker.hasPermission(sender, "key", "give")) {
+                sender.sendMessage(Colorize.color(
+                        command.getPlugin().getResponsesConfiguration().getString("wrong_arguments")
+                ));
 
-                    sender.sendMessage(Colorize.color(
-                            command.getPlugin().getResponsesConfiguration().getString("wrong_arguments")
-                    ));
-
-                    return;
-
-                }
-
-            } else if (action.equalsIgnoreCase("take")) {
-
-                if (!PermissionChecker.hasPermission(sender, "key", "take")) {
-
-                    sender.sendMessage(Colorize.color(
-                            command.getPlugin().getResponsesConfiguration().getString("wrong_arguments")
-                    ));
-
-                    return;
-
-                }
+                return;
 
             }
 
@@ -88,9 +74,10 @@ public class KeySubCommand implements SubCommand {
                 return;
             }
 
-            OfflinePlayer player = Bukkit.getOfflinePlayer(args[1]);
+            boolean isTargetAll = args[1].equalsIgnoreCase("all");
+            List<OfflinePlayer> players = isTargetAll ? new ArrayList<>(Bukkit.getOnlinePlayers()) : List.of(Bukkit.getOfflinePlayer(args[1]));
 
-            if (!player.hasPlayedBefore()) {
+            if (!isTargetAll && !players.getFirst().hasPlayedBefore()) {
 
                 sender.sendMessage(Colorize.color(
                     command.getPlugin().getResponsesConfiguration().getString("player_not_found")
@@ -102,19 +89,7 @@ public class KeySubCommand implements SubCommand {
 
             String identifier = args[2];
 
-            Key key = command.getPlugin().getKeyManager().getKey(identifier);
-
-            if (key == null) {
-
-                sender.sendMessage(Colorize.color(
-                        command.getPlugin().getResponsesConfiguration().getString("keys.invalid_identifier")
-                ));
-
-                return;
-            }
-
             String type = args[3];
-
             if (!type.equalsIgnoreCase("physical") && !type.equalsIgnoreCase("virtual")) {
 
                 sender.sendMessage(Colorize.color(
@@ -125,7 +100,17 @@ public class KeySubCommand implements SubCommand {
 
             }
 
-            if (type.equalsIgnoreCase("physical") && !player.isOnline()) {
+            Key key = command.getPlugin().getKeyManager().getKey(identifier);
+            if (key == null) {
+
+                sender.sendMessage(Colorize.color(
+                        command.getPlugin().getResponsesConfiguration().getString("keys.invalid_identifier")
+                ));
+
+                return;
+            }
+
+            if (!isTargetAll && type.equalsIgnoreCase("physical") && !players.getFirst().isOnline()) {
 
                 sender.sendMessage(Colorize.color(
                         command.getPlugin().getResponsesConfiguration().getString("keys.offline")
@@ -145,7 +130,7 @@ public class KeySubCommand implements SubCommand {
 
             }
 
-            int amount;
+            int amount = 1;
 
             if (args.length >= 5) {
 
@@ -162,16 +147,11 @@ public class KeySubCommand implements SubCommand {
                     return;
                 }
 
-            } else {
-
-                amount = 1;
-
             }
 
             String successResponseKey = action.equals("give") ? "keys.received." + type : "keys.taken." + type;
 
             Map<String, String> placeholders = new HashMap<>();
-            placeholders.put("%player%", player.getName());
             placeholders.put("%amount%", String.valueOf(amount));
             placeholders.put("%key%", key.getName());
             placeholders.put("%identifier%", identifier);
@@ -179,92 +159,111 @@ public class KeySubCommand implements SubCommand {
 
             if (type.equalsIgnoreCase("physical")) {
 
-                boolean success = false;
+                List<OfflinePlayer> successfulPlayers = new ArrayList<>();
 
-                if (action.equalsIgnoreCase("give")) {
+                for (OfflinePlayer player : players) {
 
-                    ItemStack keyItem = KeyUtils.generateKey(identifier, key.getName(), key.getItem());
+                    if (action.equalsIgnoreCase("give")) {
 
-                    for (int i = 0; i < amount; i++) {
+                        ItemStack keyItem = KeyUtils.generateKey(identifier, key.getName(), key.getItem());
 
-                        player.getPlayer().getInventory().addItem(keyItem.clone());
+                        for (int i = 0; i < amount; i++) {
 
-                    }
+                            player.getPlayer().getInventory().addItem(keyItem);
 
-                    success = true;
+                        }
 
-                } else if (action.equalsIgnoreCase("take")) {
+                        successfulPlayers.add(player);
 
-                    Player onlinePlayer = player.getPlayer();
+                    } else if (action.equalsIgnoreCase("take")) {
 
-                    int totalAvailable = 0;
+                        Player onlinePlayer = player.getPlayer();
 
-                    for (ItemStack item : onlinePlayer.getInventory().getContents()) {
+                        int totalAvailable = 0;
+                        for (ItemStack item : onlinePlayer.getInventory().getContents()) {
 
-                        if (item != null && item.getType() != Material.AIR) {
+                            if (item != null && item.getType() != Material.AIR) {
 
-                            String keyIdentifier = KeyUtils.getKeyIdentifier(item);
+                                String keyIdentifier = KeyUtils.getKeyIdentifier(item);
+                                if (keyIdentifier != null && keyIdentifier.equals(identifier)) {
 
-                            if (keyIdentifier != null && keyIdentifier.equals(identifier)) {
+                                    totalAvailable += item.getAmount();
 
-                                totalAvailable += item.getAmount();
+                                }
 
                             }
 
                         }
 
-                    }
+                        if (totalAvailable < amount) {
 
-                    if (totalAvailable < amount) {
+                            if (!isTargetAll) {
 
-                        sender.sendMessage(Colorize.color(
-                                command.getPlugin().getResponsesConfiguration().getString("keys.not_enough")
-                        ));
+                                sender.sendMessage(Colorize.color(
+                                        command.getPlugin().getResponsesConfiguration().getString("keys.not_enough")
+                                ));
 
-                        return;
+                                return;
 
-                    }
+                            }
 
-                    int itemsRemoved = 0;
+                            continue;
 
-                    for (ItemStack item : onlinePlayer.getInventory().getContents()) {
+                        }
 
-                        if (item != null && item.getType() != Material.AIR && itemsRemoved < amount) {
+                        int itemsRemoved = 0;
+                        for (ItemStack item : onlinePlayer.getInventory().getContents()) {
 
-                            String keyIdentifier = KeyUtils.getKeyIdentifier(item);
+                            if (item != null && item.getType() != Material.AIR && itemsRemoved < amount) {
 
-                            if (keyIdentifier != null && keyIdentifier.equals(identifier)) {
+                                String keyIdentifier = KeyUtils.getKeyIdentifier(item);
+                                if (keyIdentifier != null && keyIdentifier.equals(identifier)) {
 
-                                int available = item.getAmount();
-                                int needed = amount - itemsRemoved;
-                                int removeCount = Math.min(available, needed);
+                                    int available = item.getAmount();
+                                    int needed = amount - itemsRemoved;
+                                    int removeCount = Math.min(available, needed);
 
-                                item.setAmount(available - removeCount);
+                                    item.setAmount(available - removeCount);
 
-                                itemsRemoved += removeCount;
+                                    itemsRemoved += removeCount;
+
+                                }
+
                             }
 
                         }
 
+                        if (itemsRemoved > 0) {
+
+                            successfulPlayers.add(player);
+
+                        }
+
                     }
-
-                    amount = itemsRemoved;
-
-                    success = true;
 
                 }
 
-                if (success) {
+                if (!isTargetAll) {
 
-                    sender.sendMessage(Colorize.color(
-                            command.getPlugin().getResponsesConfiguration().getString("keys." + action)
-                                    .replace("%player%", player.getName())
-                                    .replace("%amount%", String.valueOf(amount))
-                                    .replace("%key%", key.getName())
-                                    .replace("%identifier%", identifier)
-                                    .replace("%type%", type)
+                    placeholders.put("%player%", players.getFirst().getName());
 
-                    ));
+                }
+
+                placeholders.put("%player_count%", String.valueOf(successfulPlayers.size()));
+
+
+                String messageKey = isTargetAll ? "keys." + action + "_all" : "keys." + action;
+                String message = command.getPlugin().getResponsesConfiguration().getString(messageKey);
+
+                for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+
+                    message = message.replace(entry.getKey(), entry.getValue());
+
+                }
+
+                sender.sendMessage(Colorize.color(message));
+
+                for (OfflinePlayer player : successfulPlayers) {
 
                     if (player.isOnline()) {
 
@@ -281,72 +280,96 @@ public class KeySubCommand implements SubCommand {
 
             } else if (type.equalsIgnoreCase("virtual")) {
 
+                List<OfflinePlayer> successfulPlayers = Collections.synchronizedList(new ArrayList<>());
+                List<CompletableFuture<Profile>> futures = new ArrayList<>();
+
                 int finalAmount = amount;
 
-                boolean wasLoaded = command.getPlugin().getProfileManager().getProfile(player.getUniqueId()) != null;
+                for (OfflinePlayer player : players) {
 
-                command.getPlugin().getProfileManager().loadProfile(player.getUniqueId(), false).thenCompose(profile -> {
+                    CompletableFuture<Profile> future = command.getPlugin().getProfileManager()
+                            .loadProfile(player.getUniqueId(), false)
+                            .thenCompose(profile -> {
 
-                    if (profile == null) {
+                                if (profile == null) {
 
-                        sender.sendMessage(Colorize.color(
-                                command.getPlugin().getResponsesConfiguration().getString("player_not_found")
-                        ));
+                                    sender.sendMessage(Colorize.color(
+                                            command.getPlugin().getResponsesConfiguration().getString("player_not_found")
+                                    ));
 
-                        return CompletableFuture.completedFuture(null);
+                                    return CompletableFuture.completedFuture(null);
+
+                                }
+
+                                if (action.equalsIgnoreCase("give")) {
+
+                                    return profile.giveKey(identifier, finalAmount, true).thenApply(v -> profile);
+
+                                } else {
+
+                                    return profile.takeKey(identifier, finalAmount, true).thenApply(v -> profile);
+
+                                }
+
+                            }).thenApply(profile -> {
+
+                                if (profile != null) {
+
+                                    successfulPlayers.add(player);
+
+                                }
+
+                                return profile;
+
+                            }).exceptionally(exception -> {
+
+                                sender.sendMessage(Colorize.color(
+                                        command.getPlugin().getResponsesConfiguration().getString("player_not_found")
+                                ));
+
+                                return null;
+
+                            });
+
+                    futures.add(future);
+
+                }
+
+                CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).thenRun(() -> {
+
+                    if (!isTargetAll) {
+
+                        placeholders.put("%player%", players.getFirst().getName());
 
                     }
 
-                    if (action.equalsIgnoreCase("give")) {
+                    placeholders.put("%player_count%", String.valueOf(successfulPlayers.size()));
 
-                        return profile.giveKey(identifier, finalAmount, true)
-                                .thenApply(v -> profile);
+                    String messageKey = isTargetAll ? "keys." + action + "_all" : "keys." + action;
+                    String message = command.getPlugin().getResponsesConfiguration().getString(messageKey);
 
-                    } else {
+                    for (Map.Entry<String, String> entry : placeholders.entrySet()) {
 
-                        return profile.takeKey(identifier, finalAmount, true)
-                                .thenApply(v -> profile);
-
-                    }
-
-                }).thenAccept(profile -> {
-
-                    if (profile == null) return;
-
-                    if (!wasLoaded) {
-
-                        command.getPlugin().getProfileManager().unloadProfile(player.getUniqueId());
+                        message = message.replace(entry.getKey(), entry.getValue());
 
                     }
 
-                    sender.sendMessage(Colorize.color(
-                            command.getPlugin().getResponsesConfiguration().getString("keys." + action)
-                                    .replace("%player%", player.getName())
-                                    .replace("%amount%", String.valueOf(finalAmount))
-                                    .replace("%key%", key.getName())
-                                    .replace("%identifier%", identifier)
-                                    .replace("%type%", type)
+                    sender.sendMessage(Colorize.color(message));
 
-                    ));
+                    for (OfflinePlayer player : successfulPlayers) {
 
-                    if (player.isOnline()) {
+                        if (player.isOnline()) {
 
-                        command.getPlugin().getActionParser().executeActions(
-                                command.getPlugin().getResponsesConfiguration().getStringList(successResponseKey),
-                                player.getPlayer(),
-                                0,
-                                placeholders
-                        );
+                            command.getPlugin().getActionParser().executeActions(
+                                    command.getPlugin().getResponsesConfiguration().getStringList(successResponseKey),
+                                    player.getPlayer(),
+                                    0,
+                                    placeholders
+                            );
+
+                        }
 
                     }
-
-                }).exceptionally(exception -> {
-
-                    sender.sendMessage(Colorize.color(
-                            command.getPlugin().getResponsesConfiguration().getString("player_not_found")
-                    ));
-
-                    return null;
 
                 });
 
@@ -394,10 +417,12 @@ public class KeySubCommand implements SubCommand {
 
                 String input = args[1].toLowerCase();
 
-                return Bukkit.getOnlinePlayers().stream()
-                        .map(Player::getName)
-                        .filter(name -> name.toLowerCase().startsWith(input))
-                        .collect(Collectors.toList());
+                return Stream.concat(
+                        Bukkit.getOnlinePlayers().stream()
+                                .map(Player::getName)
+                                .filter(name -> name.toLowerCase().startsWith(input)),
+                        Stream.of("all")
+                ).collect(Collectors.toList());
 
             } else if (args.length == 3) {
 
