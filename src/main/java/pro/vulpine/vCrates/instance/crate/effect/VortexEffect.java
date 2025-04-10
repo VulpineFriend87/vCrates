@@ -22,6 +22,7 @@ public class VortexEffect implements Effect {
         double radius = crateEffect.getRadius();
         double speed = crateEffect.getSpeed();
         double yOffset = crateEffect.getYOffset();
+        double direction = Math.toRadians(crateEffect.getDirection());  // Convert degrees to radians
 
         long totalTicks = Math.max(1, (long)(speed * 20));
         double tIncrement = (Math.PI * 2) / totalTicks;
@@ -40,9 +41,10 @@ public class VortexEffect implements Effect {
 
                 }
 
+                double angle = t + direction;
                 double currentRadius = radius * (1 - (t / (Math.PI * 2)));
-                double x = currentRadius * Math.cos(t);
-                double z = currentRadius * Math.sin(t);
+                double x = currentRadius * Math.cos(angle);
+                double z = currentRadius * Math.sin(angle);
 
                 Location loc1 = base.clone().add(x, (t / Math.PI) + yOffset, z);
                 Location loc2 = base.clone().add(-x, (t / Math.PI) + yOffset, -z);

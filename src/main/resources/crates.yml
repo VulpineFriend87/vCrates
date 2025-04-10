@@ -22,6 +22,7 @@
 #     radius: 1 # Radius of the effect
 #     speed: 1 # Speed of the effect in seconds
 #     y_offset: 0 # Y offset of the effect
+#     direction: 0 # Direction of the effect (in degrees)
 #   hologram: # Displays a hologram when the crate is opened
 #     enabled: true # Is hologram enabled?
 #     y_offset: 0 # Y offset of the hologram

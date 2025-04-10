@@ -24,6 +24,7 @@ public class HelixEffect implements Effect {
         double radius = crateEffect.getRadius();
         double speed = crateEffect.getSpeed();
         double yOffset = crateEffect.getYOffset();
+        double direction = Math.toRadians(crateEffect.getDirection());  // Convert degrees to radians
 
         long totalTicks = Math.max(1, (long)(speed * 20));
 
@@ -43,10 +44,12 @@ public class HelixEffect implements Effect {
 
                 }
 
-                double x1 = radius * Math.cos(t);
-                double z1 = radius * Math.sin(t);
-                double x2 = radius * Math.cos(t + Math.PI);
-                double z2 = radius * Math.sin(t + Math.PI);
+                double angle1 = t + direction;
+                double angle2 = t + Math.PI + direction;
+                double x1 = radius * Math.cos(angle1);
+                double z1 = radius * Math.sin(angle1);
+                double x2 = radius * Math.cos(angle2);
+                double z2 = radius * Math.sin(angle2);
 
                 Location loc1 = base.clone().add(x1, (t / Math.PI) + yOffset, z1);
                 Location loc2 = base.clone().add(x2, (t / Math.PI) + yOffset, z2);

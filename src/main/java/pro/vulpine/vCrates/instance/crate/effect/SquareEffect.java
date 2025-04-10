@@ -24,6 +24,7 @@ public class SquareEffect implements Effect {
         double radius = crateEffect.getRadius();
         double speed = crateEffect.getSpeed();
         double yOffset = crateEffect.getYOffset();
+        double direction = Math.toRadians(crateEffect.getDirection());  // Convert degrees to radians
 
         long totalTicks = Math.max(1, (long)(speed * 20));
 
@@ -43,9 +44,11 @@ public class SquareEffect implements Effect {
 
                 }
 
-                double p = (t / (Math.PI * 2)) * 4;
-                int segment = (int) Math.floor(p);
-                double fraction = p - segment;
+                // Add direction offset to the rotation
+                double adjustedT = t + direction;
+                double p = (adjustedT / (Math.PI * 2)) * 4;
+                int segment = (int) Math.floor(p % 4);
+                double fraction = p - Math.floor(p);
 
                 double x = 0;
                 double z = 0;

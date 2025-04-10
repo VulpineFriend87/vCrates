@@ -24,6 +24,7 @@ public class CircleEffect implements Effect {
         double radius = crateEffect.getRadius();
         double speed = crateEffect.getSpeed();
         double yOffset = crateEffect.getYOffset();
+        double direction = Math.toRadians(crateEffect.getDirection());  // Convert degrees to radians
 
         long totalTicks = Math.max(1, (long)(speed * 20));
 
@@ -43,8 +44,9 @@ public class CircleEffect implements Effect {
 
                 }
 
-                double x = radius * Math.cos(t);
-                double z = radius * Math.sin(t);
+                double angle = t + direction;
+                double x = radius * Math.cos(angle);
+                double z = radius * Math.sin(angle);
 
                 Location loc = base.clone().add(x, yOffset, z);
 

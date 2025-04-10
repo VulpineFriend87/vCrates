@@ -20,10 +20,11 @@ public class CrateEffect extends BukkitRunnable {
     private final double radius;
     private final double speed;
     private final double yOffset;
+    private final double direction;
 
     private final Map<String, Effect> effects = new HashMap<>();
 
-    public CrateEffect(boolean enabled, String type, Particle particle, double radius, double speed, double yOffset) {
+    public CrateEffect(boolean enabled, String type, Particle particle, double radius, double speed, double yOffset, double direction) {
 
         this.enabled = enabled;
 
@@ -33,6 +34,7 @@ public class CrateEffect extends BukkitRunnable {
         this.radius = radius;
         this.speed = speed;
         this.yOffset = yOffset;
+        this.direction = direction;
 
         effects.put("HELIX", new HelixEffect(this));
         effects.put("SPIRAL", new SpiralEffect(this));
@@ -98,6 +100,10 @@ public class CrateEffect extends BukkitRunnable {
 
     public double getYOffset() {
         return yOffset;
+    }
+
+    public double getDirection() {
+        return direction;
     }
 
     public Map<String, Effect> getEffects() {

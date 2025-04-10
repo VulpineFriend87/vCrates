@@ -23,6 +23,7 @@ public class AuraEffect implements Effect {
         double radius = crateEffect.getRadius();
         double speed = crateEffect.getSpeed();
         double yOffset = crateEffect.getYOffset();
+        double direction = Math.toRadians(crateEffect.getDirection());  // Convert degrees to radians
 
         int phiSteps = 10;
         int thetaSteps = 20;
@@ -33,7 +34,7 @@ public class AuraEffect implements Effect {
 
             for (int j = 0; j < thetaSteps; j++) {
 
-                double theta = 2 * Math.PI * j / thetaSteps;
+                double theta = 2 * Math.PI * j / thetaSteps + direction;
 
                 double x = radius * Math.sin(phi) * Math.cos(theta);
                 double y = radius * Math.cos(phi) + yOffset;

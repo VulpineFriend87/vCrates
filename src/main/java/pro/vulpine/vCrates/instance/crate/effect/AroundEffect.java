@@ -24,6 +24,7 @@ public class AroundEffect implements Effect {
         double radius = crateEffect.getRadius();
         double speed = crateEffect.getSpeed();
         double yOffset = crateEffect.getYOffset();
+        double direction = Math.toRadians(crateEffect.getDirection());  // Convert degrees to radians
 
         long totalTicks = Math.max(1, (long)(speed * 20));
 
@@ -41,7 +42,7 @@ public class AroundEffect implements Effect {
 
                 }
 
-                double randomAngle = Math.random() * Math.PI * 2;
+                double randomAngle = Math.random() * Math.PI * 2 + direction;
                 double randomRadius = Math.random() * radius;
                 double offsetX = randomRadius * Math.cos(randomAngle);
                 double offsetZ = randomRadius * Math.sin(randomAngle);
