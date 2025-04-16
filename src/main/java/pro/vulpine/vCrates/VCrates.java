@@ -7,6 +7,7 @@ import pro.vulpine.vCrates.configuration.*;
 import pro.vulpine.vCrates.instance.StorageMethod;
 import pro.vulpine.vCrates.listener.CrateListener;
 import pro.vulpine.vCrates.listener.PlayerListener;
+import pro.vulpine.vCrates.listener.WorldListener;
 import pro.vulpine.vCrates.manager.*;
 import pro.vulpine.vCrates.utils.logger.Level;
 import pro.vulpine.vCrates.utils.logger.Logger;
@@ -66,6 +67,12 @@ public final class VCrates extends JavaPlugin {
             Logger.system(line);
         }
 
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+
+            new PlaceholderManager(this).register();
+
+        }
+
         actionParser = new ActionParser(this);
 
         rarityManager = new RarityManager(this);
@@ -82,16 +89,11 @@ public final class VCrates extends JavaPlugin {
 
         profileManager = new ProfileManager(this);
 
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-
-            new PlaceholderManager(this).register();
-
-        }
-
         getCommand("vcrates").setExecutor(new VCratesCommand(this));
 
         getServer().getPluginManager().registerEvents(new CrateListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
+        getServer().getPluginManager().registerEvents(new WorldListener(this), this);
 
     }
 

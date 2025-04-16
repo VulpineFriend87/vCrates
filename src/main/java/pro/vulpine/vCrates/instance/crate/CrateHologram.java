@@ -24,15 +24,19 @@ public class CrateHologram {
         this.yOffset = yOffset;
 
         if (enabled) {
-            spawnHolograms();
+            spawn();
         }
     }
 
-    private void spawnHolograms() {
+    public void spawn() {
 
         remove();
 
         for (Location location : blocks) {
+
+            if (location.getWorld() == null) {
+                continue;
+            }
 
             spawn(location);
 
@@ -40,7 +44,7 @@ public class CrateHologram {
 
     }
 
-    private void spawn(Location location) {
+    public void spawn(Location location) {
 
         double lineSpacing = 0.3;
         double baseHeightOffset = 0.8;

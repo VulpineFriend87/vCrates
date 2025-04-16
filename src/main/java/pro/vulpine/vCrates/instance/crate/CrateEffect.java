@@ -49,8 +49,14 @@ public class CrateEffect extends BukkitRunnable {
     public void setCrate(Crate crate) {
         this.crate = crate;
 
+        start();
+    }
+
+    public void start() {
+
         long periodTicks = Math.max(1, (long)(speed * 20));
         runTaskTimer(crate.getCrateManager().getPlugin(), 0L, periodTicks);
+
     }
 
     @Override
@@ -67,6 +73,10 @@ public class CrateEffect extends BukkitRunnable {
         }
 
         for (Location block : crate.getBlocks()) {
+
+            if (block.getWorld() == null) {
+                continue;
+            }
 
             effect.play(block);
 
