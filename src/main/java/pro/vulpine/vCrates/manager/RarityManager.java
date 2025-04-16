@@ -23,7 +23,11 @@ public class RarityManager {
     }
 
     public void reload() {
+
+        rarities.clear();
+
         loadRarities(plugin.getRaritiesConfiguration());
+
     }
 
     private void loadRarities(RaritiesConfiguration config) {
