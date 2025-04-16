@@ -104,8 +104,8 @@ public class ActionParser {
         int stay = parts.length > 4 ? Integer.parseInt(parts[4].trim()) : 40;
         int fadeOut = parts.length > 5 ? Integer.parseInt(parts[5].trim()) : 10;
 
-        title = replacePlaceholders(title, placeholders);
-        subtitle = replacePlaceholders(subtitle, placeholders);
+        title = replacePlaceholders(player, title, placeholders);
+        subtitle = replacePlaceholders(player, subtitle, placeholders);
 
         if (target.equalsIgnoreCase("global")) {
             for (Player p : Bukkit.getOnlinePlayers()) {
@@ -122,7 +122,7 @@ public class ActionParser {
         String[] parts = params.split(";", 2);
 
         String target = parts[0].trim();
-        String message = Colorize.color(replacePlaceholders(parts[1].trim(), placeholders));
+        String message = Colorize.color(replacePlaceholders(player, parts[1].trim(), placeholders));
 
         if (target.equalsIgnoreCase("global")) {
             for (Player p : Bukkit.getOnlinePlayers()) {
@@ -141,7 +141,7 @@ public class ActionParser {
         String target = parts[0].trim();
         String message = Colorize.color(parts[1].trim());
 
-        message = replacePlaceholders(message, placeholders);
+        message = replacePlaceholders(player, message, placeholders);
 
         if (target.equalsIgnoreCase("global")) {
             for (Player p : Bukkit.getOnlinePlayers()) {
@@ -182,11 +182,12 @@ public class ActionParser {
 
     }
 
-    private String replacePlaceholders(String str, Map<String, String> placeholders) {
-
+    private String replacePlaceholders(Player player, String str, Map<String, String> placeholders) {
         for (Map.Entry<String, String> entry : placeholders.entrySet()) {
             str = Colorize.color(str.replace(entry.getKey(), entry.getValue()));
         }
+
+        str = PlaceholderUtils.replace(player, str);
 
         return str;
     }

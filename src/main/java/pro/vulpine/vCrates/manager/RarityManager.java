@@ -4,6 +4,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import pro.vulpine.vCrates.VCrates;
 import pro.vulpine.vCrates.configuration.RaritiesConfiguration;
 import pro.vulpine.vCrates.instance.Rarity;
+import pro.vulpine.vCrates.utils.PlaceholderUtils;
 import pro.vulpine.vCrates.utils.logger.Logger;
 
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class RarityManager {
                 continue;
             }
 
-            String name = raritySection.getString("name");
+            String name = PlaceholderUtils.replace(null, raritySection.getString("name"));
             int weight = raritySection.getInt("weight");
 
             Rarity rarity = new Rarity(identifier, name, weight);

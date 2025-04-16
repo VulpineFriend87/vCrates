@@ -1,5 +1,6 @@
 package pro.vulpine.vCrates.manager;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -14,6 +15,7 @@ import pro.vulpine.vCrates.instance.milestone.MilestoneReward;
 import pro.vulpine.vCrates.instance.reward.Reward;
 import pro.vulpine.vCrates.instance.reward.RewardDisplayItem;
 import pro.vulpine.vCrates.instance.reward.RewardItem;
+import pro.vulpine.vCrates.utils.PlaceholderUtils;
 import pro.vulpine.vCrates.utils.logger.Logger;
 
 import java.util.*;
@@ -27,7 +29,12 @@ public class CrateManager {
     public CrateManager(VCrates plugin) {
         this.plugin = plugin;
 
-        loadCrates(plugin.getCratesConfiguration());
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+
+            loadCrates(plugin.getCratesConfiguration());
+
+        }, 1L);
+
     }
 
     public void reload() {
@@ -60,7 +67,7 @@ public class CrateManager {
                 continue;
             }
 
-            String name = crateSection.getString("name");
+            String name = PlaceholderUtils.replace(null, crateSection.getString("name"));
             int cooldown = crateSection.getInt("cooldown");
             boolean preview = crateSection.getBoolean("preview", true);
 
@@ -104,6 +111,7 @@ public class CrateManager {
 
             boolean hologramEnabled = crateSection.getBoolean("hologram.enabled", true);
             List<String> hologramLines = crateSection.getStringList("hologram.lines");
+            hologramLines.replaceAll(input -> PlaceholderUtils.replace(null, input));
             double hologramYOffset = crateSection.getDouble("hologram.y_offset", 0);
             CrateHologram crateHologram = new CrateHologram(hologramEnabled, blocks, hologramLines, hologramYOffset);
 
@@ -123,7 +131,7 @@ public class CrateManager {
                         continue;
                     }
 
-                    String rewardName = rewardSection.getString("name");
+                    String rewardName = PlaceholderUtils.replace(null, rewardSection.getString("name"));
 
                     Rarity rewardRarity = plugin.getRarityManager().getRarity(rewardSection.getString("rarity"));
                     if (rewardRarity == null) {
@@ -144,6 +152,7 @@ public class CrateManager {
                     int displayItemAmount = rewardDisplayItemSection.getInt("amount", 1);
 
                     List<String> displayItemLore = rewardDisplayItemSection.getStringList("lore");
+                    displayItemLore.replaceAll(input -> PlaceholderUtils.replace(null, input));
 
                     RewardDisplayItem rewardDisplayItem = new RewardDisplayItem(displayItemType, displayItemAmount, displayItemLore);
 
@@ -154,9 +163,10 @@ public class CrateManager {
 
                     for (Map<?, ?> itemData : itemsList) {
 
-                        String itemName = (String) itemData.get("name");
+                        String itemName = PlaceholderUtils.replace(null, (String) itemData.get("name"));
 
                         List<String> itemLore = (List<String>) itemData.get("lore");
+                        itemLore.replaceAll(input -> PlaceholderUtils.replace(null, input));
 
                         Material itemType = Material.getMaterial(itemData.get("type").toString().toUpperCase());
                         int itemAmount = (int) itemData.get("amount");
@@ -200,7 +210,7 @@ public class CrateManager {
 
                     for (Map<?, ?> rewardData : (List<Map<?, ?>>) milestoneData.get("rewards")) {
 
-                        String rewardName = (String) rewardData.get("name");
+                        String rewardName = PlaceholderUtils.replace(null, (String) rewardData.get("name"));
                         Material rewardDisplayItem = Material.getMaterial(rewardData.get("display_item").toString().toUpperCase());
                         if (rewardDisplayItem == null) {
                             Logger.warn("Display item " + rewardData.get("display_item") + " is not a valid material, skipping.", "CrateManager");
@@ -211,8 +221,9 @@ public class CrateManager {
 
                         for (Map<?, ?> itemData : (List<Map<?, ?>>) rewardData.get("items")) {
 
-                            String itemName = (String) itemData.get("name");
+                            String itemName = PlaceholderUtils.replace(null, (String) itemData.get("name"));
                             List<String> itemLore = (List<String>) itemData.get("lore");
+                            itemLore.replaceAll(input -> PlaceholderUtils.replace(null, input));
                             Material itemType = Material.getMaterial(itemData.get("type").toString().toUpperCase());
                             if (itemType == null) {
                                 Logger.warn("Item type " + itemData.get("type") + " is not a valid material, skipping.", "CrateManager");

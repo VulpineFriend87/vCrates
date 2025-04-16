@@ -5,6 +5,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import pro.vulpine.vCrates.VCrates;
 import pro.vulpine.vCrates.configuration.KeysConfiguration;
 import pro.vulpine.vCrates.instance.Key;
+import pro.vulpine.vCrates.utils.PlaceholderUtils;
 import pro.vulpine.vCrates.utils.logger.Logger;
 
 import java.util.*;
@@ -52,7 +53,7 @@ public class KeyManager {
             }
 
             boolean virtualAllowed = keySection.getBoolean("virtual_allowed");
-            String name = keySection.getString("name");
+            String name = PlaceholderUtils.replace(null, keySection.getString("name"));
             Material item = Material.valueOf(keySection.getString("item"));
 
             Key key = new Key(virtualAllowed, identifier, name, item);
