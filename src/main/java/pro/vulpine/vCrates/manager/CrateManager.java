@@ -211,11 +211,6 @@ public class CrateManager {
                     for (Map<?, ?> rewardData : (List<Map<?, ?>>) milestoneData.get("rewards")) {
 
                         String rewardName = PlaceholderUtils.replace(null, (String) rewardData.get("name"));
-                        Material rewardDisplayItem = Material.getMaterial(rewardData.get("display_item").toString().toUpperCase());
-                        if (rewardDisplayItem == null) {
-                            Logger.warn("Display item " + rewardData.get("display_item") + " is not a valid material, skipping.", "CrateManager");
-                            continue;
-                        }
 
                         List<RewardItem> rewardItems = new ArrayList<>();
 
@@ -235,7 +230,7 @@ public class CrateManager {
 
                         }
 
-                        milestoneRewards.add(new MilestoneReward(rewardName, rewardDisplayItem, rewardItems));
+                        milestoneRewards.add(new MilestoneReward(rewardName, rewardItems));
 
                     }
 

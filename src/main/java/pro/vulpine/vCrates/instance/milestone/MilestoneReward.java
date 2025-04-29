@@ -1,6 +1,5 @@
 package pro.vulpine.vCrates.instance.milestone;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import pro.vulpine.vCrates.instance.reward.RewardItem;
@@ -9,12 +8,10 @@ import java.util.List;
 
 public class MilestoneReward {
     private final String name;
-    private final Material displayItem;
     private final List<RewardItem> items;
 
-    public MilestoneReward(String name, Material displayItem, List<RewardItem> items) {
+    public MilestoneReward(String name, List<RewardItem> items) {
         this.name = name;
-        this.displayItem = displayItem;
         this.items = items;
     }
 
@@ -24,10 +21,6 @@ public class MilestoneReward {
 
     public String getName() {
         return name;
-    }
-
-    public Material getDisplayItem() {
-        return displayItem;
     }
 
     public List<RewardItem> getItems() {
