@@ -21,7 +21,10 @@ public class CrateKeys {
     }
 
     public boolean isKeyAllowed(String identifier) {
+
+        if (identifier == null || allowedKeys.isEmpty()) {
+            return false;
+        }
         return allowedKeys.contains(identifier);
     }
-
 }

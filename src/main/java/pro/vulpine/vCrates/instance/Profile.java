@@ -68,18 +68,17 @@ public class Profile {
 
     public boolean hasKey(List<String> identifiers) {
 
-        for (String identifier : identifiers) {
-
-            if (!hasKey(identifier)) {
-
-                return false;
-
-            }
-
+        if (identifiers == null || identifiers.isEmpty()) {
+            return false;
         }
 
-        return true;
+        for (String identifier : identifiers) {
+            if (identifier != null && hasKey(identifier)) {
+                return true;
+            }
+        }
 
+        return false;
     }
 
     public CompletableFuture<Void> setStatistic(String type, String identifier, int value, boolean updateProfile) {
@@ -111,23 +110,24 @@ public class Profile {
     }
 
     public CompletableFuture<Void> incrementStatistic(String type, String identifier, boolean updateProfile) {
+        // Add null check for identifier
+        if (identifier == null) {
+            return updateProfile ? update() : CompletableFuture.completedFuture(null);
+        }
 
         for (StatisticEntry entry : statistics) {
 
-            if (entry.getType().equals(type) && entry.getIdentifier().equals(identifier)) {
+            if (entry.getType().equals(type) && 
+                entry.getIdentifier() != null && 
+                entry.getIdentifier().equals(identifier)) {
 
                 entry.setValue(entry.getValue() + 1);
-
                 return updateProfile ? update() : CompletableFuture.completedFuture(null);
-
             }
-
         }
 
         statistics.add(new StatisticEntry(type, identifier, 1));
-
         return updateProfile ? update() : CompletableFuture.completedFuture(null);
-
     }
 
     public void decrementStatistic(StatisticEntry entry) {

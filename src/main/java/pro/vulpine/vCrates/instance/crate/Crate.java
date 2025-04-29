@@ -79,6 +79,19 @@ public class Crate {
 
         if (crateKeys.isRequired()) {
 
+            if (crateKeys.getAllowedKeys().isEmpty()) {
+                crateManager.getPlugin().getActionParser().executeActions(
+                        crateManager.getPlugin().getResponsesConfiguration().getStringList("keys.missing"),
+                        player, 0, placeholders
+                );
+
+                if (cratePushback.isEnabled()) {
+                    cratePushback.execute(player);
+                }
+
+                return;
+            }
+
             if (!crateKeys.isKeyAllowed(KeyUtils.getKeyIdentifier(player.getInventory().getItemInMainHand()))) {
 
                 if (!profile.hasKey(crateKeys.getAllowedKeys())) {
@@ -222,13 +235,13 @@ public class Crate {
                 player.getInventory().getItemInMainHand().setAmount(key.getAmount() - 1);
 
             } else {
-
+                // Make sure we have a valid key identifier
                 String identifier = crateKeys.getAllowedKeys().stream().findFirst().orElse(null);
-
-                profile.useKey(identifier, false);
-
-                profile.incrementStatistic("keys-used", identifier, false);
-
+                
+                if (identifier != null) {
+                    profile.useKey(identifier, false);
+                    profile.incrementStatistic("keys-used", identifier, false);
+                }
             }
 
         }
