@@ -354,7 +354,9 @@ public class KeySubCommand implements SubCommand {
 
                     }
 
-                    sender.sendMessage(Colorize.color(message));
+                    String finalMessage = message;
+
+                    Bukkit.getScheduler().runTask(command.getPlugin(), () -> sender.sendMessage(Colorize.color(finalMessage)));
 
                     for (OfflinePlayer player : successfulPlayers) {
 
