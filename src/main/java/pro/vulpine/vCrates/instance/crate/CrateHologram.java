@@ -23,14 +23,16 @@ public class CrateHologram {
         this.lines = lines;
         this.yOffset = yOffset;
 
-        if (enabled) {
-            spawn();
-        }
+        spawn();
     }
 
     public void spawn() {
 
         remove();
+
+        if (!enabled) {
+            return;
+        }
 
         for (Location location : blocks) {
 
